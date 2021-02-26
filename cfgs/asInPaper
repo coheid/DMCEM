@@ -1,0 +1,220 @@
+## paper: http://www.marten-hillebrand.de/research/IMCC_B.pdf
+## search for 'chosen' to get the free parameters
+
+## general parameters (accessed in code without preceding underscore)
+bool    :: dosys     :: False        ## set to True if you wanna run systematic variations
+strlist :: sysvar    :: ()           ## list of variables whose sys variation to be included, empty=all
+int     :: nAttempts :: 3            ## maximum iterations
+int     :: nTsteps   :: 10           ## total time steps
+int     :: tstep     :: 10           ## Section 3.1; years per step
+int     :: tstart    :: 2015         ## Section 3.1; starting year 
+
+## climate model
+float   :: s1        :: 658          ## Section 3.2 (Footnote 10: 645?)
+float   :: s2        :: 149          ## Section 3.2 (Footnote 10: 162?)
+float   :: phil      :: 0.2          ## Section 3.2
+float   :: phi       :: 0.0228       ## Section 3.2
+float   :: phi0      :: 0.393        ## Section 3.2
+float   :: sbar      :: 581          ## Section 3.2
+
+## general
+float   :: alpha0    :: 0.3          ## Section 3.3
+float   :: beta      :: 0.8597304423 ## Section 3.5; 0.985^10
+float   :: ctry0     :: 100          ## chosen; throwing C using this as mean
+float   :: ctry1     :: 20           ## chosen; throwing C using this as variance
+float   :: ccrit     :: 0.01         ## Footnote 7; chosen; supposed to be "a small number"
+float   :: deltaa    :: 0.005        ## Section 3.5
+float   :: deltan    :: 0.3          ## Section 3.5
+float   :: eqq       :: 1            ## Section 1.1
+float   :: kbar      :: 0.2375       ## Section 3.5
+float   :: sigma     :: 1            ## Section 3.5
+float   :: vtry1     :: 2            ## chosen; throwing v using this as variance (and c as mean)
+
+## regions
+int     :: nRegions  :: 6            ## Section 3.1
+
+## USA
+float   :: eaa0_1     :: 1            ## Section 3.5
+float   :: egga0_1    :: 0            ## Table 5
+float   :: eggbara0_1 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_1 :: 0.005616     ## Table 5
+float   :: eggn0_1    :: 0.11501      ## Table 5
+int     :: ennbar0_1  :: 310          ## Table 2
+#int     :: ennbar9_1  :: 437          ## Table 2
+#int     :: ennbar19_1 :: 470          ## Table 2
+float   :: eta_1_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_1_2    :: 0.3          ## chosen; energy mix
+float   :: eta_1_3    :: 0.2          ## chosen; energy mix
+float   :: gamma_1    :: 0.0000412    ## Table 3
+float   :: k0_1       :: 60.23        ## Table 17
+float   :: q_1_1      :: 1.38         ## Table 4
+float   :: q_1_2      :: 10.19        ## Table 4
+float   :: q_1_3      :: 111.49       ## Table 4
+float   :: r_1_1      :: 13.67        ## Table 14
+float   :: r_1_2      :: 253.74       ## Table 14
+float   :: r_1_3      :: 0            ## Table 14
+float   :: xbar_1_1   :: 13.9         ## Table 2
+float   :: xbar_1_2   :: 9.6          ## Table 2
+float   :: xbar_1_3   :: 0            ## Table 2
+float   :: y_1        :: 156.686      ## Table 12 (Table 2: 156.7?)
+
+## OECD EU
+float   :: eaa0_2     :: 0.7          ## Section 3.5
+float   :: egga0_2    :: 0            ## Table 5
+float   :: eggbara0_2 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_2 :: 0.00582      ## Table 5
+float   :: eggn0_2    :: -0.07607     ## Table 5
+int     :: ennbar0_2  :: 557          ## Table 2
+#int     :: ennbar9_2  :: 478          ## Table 2
+#int     :: ennbar19_2 :: 500          ## Table 2
+float   :: eta_2_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_2_2    :: 0.3          ## chosen; energy mix
+float   :: eta_2_3    :: 0.2          ## chosen; energy mix
+float   :: gamma_2    :: 0.0000205    ## Table 3
+float   :: k0_2       :: 78.91        ## Table 17
+float   :: q_2_1      :: 0.56         ## Table 4
+float   :: q_2_2      :: 3.56         ## Table 4
+float   :: q_2_3      :: 360.61       ## Table 4
+float   :: r_2_1      :: 4.58         ## Table 14
+float   :: r_2_2      :: 82.29        ## Table 14
+float   :: r_2_3      :: 0            ## Table 14
+float   :: xbar_2_1   :: 10.3         ## Table 2
+float   :: xbar_2_2   :: 6.2          ## Table 2
+float   :: xbar_2_3   :: 0            ## Table 2
+float   :: y_2        :: 188.510      ## Table 12 (Table 2: 188.4?)
+
+## Other High Income
+float   :: eaa0_3     :: 0.9          ## Section 3.5
+float   :: egga0_3    :: 0            ## Table 5
+float   :: eggbara0_3 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_3 :: -0.00058     ## Table 5
+float   :: eggn0_3    :: -0.00299     ## Table 5
+int     :: ennbar0_3  :: 335          ## Table 2
+#int     :: ennbar9_3  :: 331          ## Table 2
+#int     :: ennbar19_3 :: 329          ## Table 2
+float   :: eta_3_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_3_2    :: 0.3          ## chosen; energy mix
+float   :: eta_3_3    :: 0.2          ## chosen; energy mix
+float   :: gamma_3    :: 0.0000205    ## Table 3
+float   :: k0_3       :: 48.2         ## Table 17
+float   :: q_3_1      :: 0.85         ## Table 4
+float   :: q_3_2      :: 4.07         ## Table 4
+float   :: q_3_3      :: 116.10       ## Table 4
+float   :: r_3_1      :: 132.36       ## Table 14
+float   :: r_3_2      :: 165.93       ## Table 14
+float   :: r_3_3      :: 0            ## Table 14
+float   :: xbar_3_1   :: 12.7         ## Table 2
+float   :: xbar_3_2   :: 5.8          ## Table 2
+float   :: xbar_3_3   :: 0            ## Table 2
+float   :: y_3        :: 144.835      ## Table 12 (Table 2: 129.8?)
+
+## China
+float   :: eaa0_4     :: 0.25         ## Section 3.5
+float   :: egga0_4    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
+float   :: eggbara0_4 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_4 :: 0.00263      ## Table 5
+float   :: eggn0_4    :: -0.05580     ## Table 5
+int     :: ennbar0_4  :: 1341         ## Table 2
+#int     :: ennbar9_4  :: 1182         ## Table 2
+#int     :: ennbar19_4 :: 1201         ## Table 2
+float   :: eta_4_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_4_2    :: 0.3          ## chosen; energy mix
+float   :: eta_4_3    :: 0.2          ## chosen; energy mix
+float   :: gamma_4    :: 0.0000412    ## Table 3
+float   :: k0_4       :: 24.74        ## Table 17
+float   :: q_4_1      :: 0.11         ## Table 4
+float   :: q_4_2      :: 6.96         ## Table 4
+float   :: q_4_3      :: 12.7         ## Table 4
+float   :: r_4_1      :: 7.62         ## Table 14
+float   :: r_4_2      :: 140.91       ## Table 14
+float   :: r_4_3      :: 0            ## Table 14
+float   :: xbar_4_1   :: 5.3          ## Table 2
+float   :: xbar_4_2   :: 31.9         ## Table 2
+float   :: xbar_4_3   :: 0            ## Table 2
+float   :: y_4        :: 134.534      ## Table 12 (Table 2: 69.2?)
+
+## Developing
+float   :: eaa0_5     :: 0.35         ## Section 3.5
+float   :: egga0_5    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
+float   :: eggbara0_5 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_5 :: -0.00491     ## Table 5
+float   :: eggn0_5    :: 0.04901      ## Table 5
+int     :: ennbar0_5  :: 1110         ## Table 2
+#int     :: ennbar9_5  :: 1210         ## Table 2
+#int     :: ennbar19_5 :: 1162         ## Table 2
+float   :: eta_5_1    :: 0.5           ## chosen; energy mix 
+float   :: eta_5_2    :: 0.3           ## chosen; energy mix
+float   :: eta_5_3    :: 0.2           ## chosen; energy mix
+float   :: gamma_5    :: 0.0000622    ## Table 3
+float   :: k0_5       :: 24.18        ## Table 17
+float   :: q_5_1      :: 0.36         ## Table 4
+float   :: q_5_2      :: 1.66         ## Table 4
+float   :: q_5_3      :: 24.22        ## Table 4
+float   :: r_5_1      :: 209.56       ## Table 14
+float   :: r_5_2      :: 209.74       ## Table 14
+float   :: r_5_3      :: 0            ## Table 14
+float   :: xbar_5_1   :: 15.5         ## Table 2
+float   :: xbar_5_2   :: 7.0          ## Table 2
+float   :: xbar_5_3   :: 0            ## Table 2
+float   :: y_5        :: 162.580      ## Table 12 (Table 2: 85.9?)
+
+## Low Income
+float   :: eaa0_6     :: 0.125        ## Section 3.5
+float   :: egga0_6    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
+float   :: eggbara0_6 :: 0.10462      ## Table 5; 1.01^10-1
+float   :: eggbarn0_6 :: -0.01599     ## Table 5
+float   :: eggn0_6    :: 0.25064      ## Table 5
+int     :: ennbar0_6  :: 3289         ## Table 2
+#int     :: ennbar9_6  :: 5412         ## Table 2
+#int     :: ennbar19_6 :: 4825         ## Table 2
+float   :: eta_6_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_6_2    :: 0.3          ## chosen; energy mix
+float   :: eta_6_3    :: 0.2          ## chosen; energy mix
+float   :: gamma_6    :: 0.0000833    ## Table 3
+float   :: k0_6       :: 2.7          ## Table 17
+float   :: q_6_1      :: 0.06         ## Table 4
+float   :: q_6_2      :: 0.73         ## Table 4
+float   :: q_6_3      :: 41.99        ## Table 4
+float   :: r_6_1      :: 26.23        ## Table 14
+float   :: r_6_2      :: 213.92       ## Table 14
+float   :: r_6_3      :: 0            ## Table 14
+float   :: xbar_6_1   :: 7.4          ## Table 2
+float   :: xbar_6_2   :: 8.6          ## Table 2
+float   :: xbar_6_3   :: 0            ## Table 2
+float   :: y_6        :: 147.825      ## Table 12 (Table 2: 48.9?)
+
+
+## Energy sectors / Resources
+int     :: nSectors :: 3             ## Section 3.1
+float   :: nu0      :: 0.0812        ## Section 3.4
+float   :: rho      :: 0.5           ## Section 3.3
+
+## Oil
+float   :: alpha_1  :: 0.272         ## Section 3.3
+float   :: ecc_1    :: 0.00036969    ## Section 3.3
+float   :: kappa_1  :: 0.53325       ## Section 3.4
+float   :: nu_1     :: 0.5873        ## Section 3.4
+float   :: r_1      :: 1386          ## Section 3.3
+float   :: rcrit_1  :: 0.01          ## Section 2.3; chosen; supposed to be "close to zero"
+float   :: zeta_1   :: 0.6482        ## Section 3.3
+
+## Coal 
+float   :: alpha_2  :: 0.391         ## Section 3.3
+float   :: ecc_2    :: 0.00043       ## Section 3.3; should be 0.000043 no? to have $43
+float   :: kappa_2  :: 0.29483       ## Section 3.4
+float   :: nu_2     :: 0.2056        ## Section 3.4 (Section 3.3: 0.21?)
+float   :: r_2      :: 23482.48      ## Section 3.3; 1066.54+22415.94
+float   :: rcrit_2  :: 0.01          ## Section 2.3; chosen; supposed to be "close to zero"
+float   :: zeta_2   :: 0.5441        ## Section 3.3
+
+## Renewables
+float   :: alpha_3  :: 0.82          ## Section 3.3
+float   :: ecc_3    :: 0             ## Section 3.3
+float   :: kappa_3  :: 0.17192       ## Section 3.4
+float   :: nu_3     :: 0             ## Section 3.4
+float   :: r_3      :: 0             ## Section 3.3; zero means infinity
+float   :: rcrit_3  :: 0.01          ## Section 2.3; chosen; supposed to be "close to zero" 
+float   :: zeta_3   :: 0             ## Section 3.3
+
+
+
