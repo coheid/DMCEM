@@ -31,7 +31,8 @@ class Region(Component):
 		self._eww      = None ## w^l(t)         == wages
 		self._gamma    = None ## gamma^l        == climate damage parameter [cfg]
 		self._k        = None ## K^l(t)         == capital allocation in the final sector
-		self._k0       = None ## K_0^l          == initial capital allocation in the final sector [cfg]
+		self._k0       = None ## K^l(t=0)       == initial capital allocation in the final sector
+		self._kinit    = None ## K_0^l          == initial share of capital allocation [cfg]
 		self._mu       = None ## \mu^l(t)       == consumption share
 		self._n        = None ## \bar{N}^l(t)   == total labor supply
 		self._n0       = None ## N_0^l(t)       == labor supply of final sector
@@ -46,8 +47,7 @@ class Region(Component):
 	## ---------------------------------------------
 	def init(self):
 		""" Extract all variables from cfg """
-		super(Region, self).init(["eaa0", "egga0", "eggbara0", "eggbarn0", "eggn0", "ennbar0", "gamma", "k0", "y"])
-		#super(Region, self).init(["eaa0", "egga0", "eggbara0", "eggbarn0", "eggn0", "ennbar0", "ennbar9", "ennbar19", "gamma", "k0", "y"])
+		super(Region, self).init(["eaa0", "egga0", "eggbara0", "eggbarn0", "eggn0", "ennbar0", "gamma", "kinit", "y"])
 
 	## initEtas
 	## ---------------------------------------------
@@ -88,7 +88,6 @@ class Region(Component):
 		cm        = self.m.getComp("ClimateModel")
 		self._d   = 1 - math.exp(-self._gamma*(cm._s-cm._sbar))  ## D_t^l, Eqn (15)
 		self._y   = (1-self._d) * self._k**self.m._alpha0 * self._n**(1-self.m._alpha0-self.m._nu0) * self._e**self.m._nu0  ## Y_t^l, Eqn (1)
-		self._eww = self.m._enn*self._y/self._n0                 ## w_t^l, Eqn (3)
 
 	## runEnn
 	## ---------------------------------------------
@@ -102,13 +101,6 @@ class Region(Component):
 		self._enn      = (1+self._eggn)*self._enn       ## n_t^l, Eqn (40)
 		self._eaa      = (1+self._egga)*self._eaa       ## a_t^l, Eqn (40)
 		self._n        = self._enn*self._eaa            ## N_t^{l,s} = \bar{N}_t^l, page 19
-		totenn         = self.m._enn                    ## sum of n_{i,t}^l over i, implicit page 35
-		for i in range(self.m._nSectors):
-			es      = self.m.getComp("EnergySector", i        )
-			ea      = self.m.getComp("EnergyAgent" , self.l, i)
-			ea._enn = (1-es._alpha-es._nu)*self.m._nu0*ea._eta ## n_{i,t}^l, page 35
-			totenn += ea._enn                                  ## implicit page 35
-		self._n0       = self.m._enn/totenn * self._n   ## N_{0,t}^l, page 35
 
 	## start
 	## ---------------------------------------------
@@ -120,7 +112,7 @@ class Region(Component):
 		self._eaa = self._eaa0     ## starting value for a_t^l
 		self._w   = 0              ## starting value for W_t^l
 		self._t   = 0              ## starting value for T_t^l
-		self._k   = self._k0       ## starting value for K_t^l
+		self._k   = self.m._kbar*self._k0       ## starting value for K_t^l
 		self._theta = 1 # FIXME
 
 
