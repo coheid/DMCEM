@@ -295,13 +295,12 @@ class Model(Master):
 		r0         = self.getComp("Region", 0) ## first region, l=1
 		self._err  = self._alpha0*r0._y/r0._k  ## r_t, Eqn (3)
 		self._eqq *= 1./self._err             ## q_t, page 6
-		## new energy mix and prices
+		## new energy prices
 		for l in range(self._nRegions):
 			r = self.getComp("Region", l)
 			for i in range(self._nSectors):
 				es      = self.getComp("EnergySector",    i)
 				ea      = self.getComp("EnergyAgent" , l, i)
-				ea._eta = es._kappa * (ea._e/r._e)**self._rho  ## \eta_{i,t}^l, Eqn (32)
 				ea._epp = self._nu0*r._y*(es._kappa/ea._e)*(ea._e/r._e)**self._rho  ## p_{i,t}^l, Eqn (3)
 		## new resource prices
 		for i in range(self._nSectors):
@@ -404,6 +403,10 @@ class Model(Master):
 			r.run() ## compute E_t^l and Y_t^l
 			self._y += r._y
 			yt      += r._gamma*r._y 
+			for i in range(self._nSectors):
+				es = self.getComp("EnergySector", i)
+				ea = self.getComp("EnergyAgent" , l, i)
+				ea._eta = es._kappa * (ea._e/r._e)**self._rho  ## \eta_{i,t}^l, Eqn (32)
 		self._tau = self._taubar*yt ## \tau_t^{eff}, Eqn (28)
 
 	## setComp
