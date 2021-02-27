@@ -294,7 +294,7 @@ class Model(Master):
 		## new capital prices
 		r0         = self.getComp("Region", 0) ## first region, l=1
 		self._err  = self._alpha0*r0._y/r0._k  ## r_t, Eqn (3)
-		self._eqq *= 1./self._err             ## q_t, page 6
+		self._eqq *= 1./self._err              ## q_t, page 6
 		## new energy prices
 		for l in range(self._nRegions):
 			r = self.getComp("Region", l)

@@ -39,7 +39,6 @@ class Region(Component):
 		self._pi       = None ## \Pi^l          == lifetime profit 
 		self._t        = None ## T^l(t)         == transfer to be received by consumers
 		self._theta    = None ## theta^l        == transfer policy
-#		self._tau       = None ## tau^l(t)       == tax policy
 		self._w        = None ## W^l(t)         == lifetime labor income
 		self._y        = None ## Y^l(t)         == total regional production [cfg]
 
