@@ -61,6 +61,7 @@ class Model(Master):
 		self.cache     = {} ## cache for observable values per timestep
 		self._alpha0   = None ## \alpha_0      == capital elasticity [cfg]
 		self._beta     = None ## \beta         == utility parameter [cfg]
+		self._cbar     = None ## \bar{C}(t)    == global consumption [cfg if dothrow==False]
 		self._ctry0    = None ##               == mean     for throwing C [cfg]
 		self._ctry1    = None ##               == variance for throwing C [cfg]
 		self._ccrit    = None ## C^{crit}      == critical value for C [cfg]
@@ -205,7 +206,7 @@ class Model(Master):
 		""" Initialize parameters """
 		## set model parameters
 		self.tsteps = [t for t in range(1, self.nTsteps+1)]
-		extractPars(self, self, ["alpha0","beta","ctry0","ctry1","ccrit","deltaa","deltan","eqq","kbar","nSectors","nRegions","nu0","rho","sigma","vtry1"])
+		extractPars(self, self, ["alpha0","beta","cbar","ctry0","ctry1","ccrit","deltaa","deltan","eqq","kbar","nSectors","nRegions","nu0","rho","sigma","vtry1"])
 		startPars  (self, self) ## FIXME: not good; should do it with start of others but need nRegions et al BEFORE loading components, so keep it here for now (no syst var though)
 
 	## initVals
@@ -221,6 +222,7 @@ class Model(Master):
 		self._g      = 0.01 ## FIXME
 		cm           = self.getComp("ClimateModel")
 		self._taubar = cm._phil/(1-self._beta*(1+self._g)**(1-self._sigma))+cm._phi0*(1-cm._phil)/(1-self._beta*(1+self._g)**(1-self._sigma)*(1-cm._phi)) ## \bar{\tau}^{eff}, Eqn (28)
+		self._taubar = 0 if self.dolf else self._taubar ## no tax in laissez-faire
 		## lifetime profit of resource sectors
 		yt = 0
 		for l in range(self._nRegions):
@@ -262,8 +264,8 @@ class Model(Master):
 			it += 1
 			self.tui.msg("Doing iteration %02d"%it)
 			## throwing initial values
-			self.throw   () ## throw variables
-			self.initVals() ## compute initial values
+			if self.dothrow: self.throw() ## throw variables
+			self.initVals()               ## compute initial values
 ## FIXME: store initial values too..? 
 			## main temporal iteration
 			v = False
@@ -307,7 +309,7 @@ class Model(Master):
 			es = self.getComp("EnergySector", i)
 			es.run()  ## compute v_{i,t}, Eqn (10)
 		## new consumption
-		self._c = math.pow(self._beta*self._err, 1./self._sigma)*self._c) ## \bar{C}_t, Eqn (20)
+		self._cbar = math.pow(self._beta*self._err, 1./self._sigma)*self._cbar) ## \bar{C}_t, Eqn (20)
 
 	## runStep
 	## ---------------------------------------------
@@ -343,14 +345,14 @@ class Model(Master):
 				es  = self.getComp("EnergySector", i)
 				ea  = self.getComp("EnergyAgent" , l, i)
 				zx += es._zeta*ea._x
-			r._t  += self._eqq*self._tau*zx ## T^l(t) without \theta^l, Eqn (12)
+			tf     = self._eqq*self._tau*zx ## T^l(t) without \theta^l, Eqn (12)
 ## FIXME: what about \theta^l?
+			r._t  += 0 if self.dolf else tf ## no transfer in laissez-faire
 			tot   += self._err0*r._k0 + r._w + r._pi + r._theta*r._t 
 		for l in range(self._nRegions):
-			r        = self.getComp("Region", l)
-			r._mu    = (self._err0*r._k0 + r._w + r._pi + r._theta*r._t) / tot ## \mu^l, Eqn (19)
-			r._c     = r._mu*ctot ## C_t^l, Eqn (19)
-			self._c += r._c       ## \bar{C}_t
+			r     = self.getComp("Region", l)
+			r._mu = (self._err0*r._k0 + r._w + r._pi + r._theta*r._t) / tot ## \mu^l, Eqn (19)
+			r._c  = r._mu*self._cbar ## C_t^l, Eqn (19)
 		## step Ib: capital allocation
 		totekk = 0 ## sum of k_{i,t}^l over i,l, page 36
 		for l in range(self._nRegions):
@@ -455,9 +457,9 @@ class Model(Master):
 	## ---------------------------------------------
 	def throw(self):
 		""" Throw initial values for variables """
-		self._c = throw(self._c if self._c else self.ctry0, \
-		                self.ctry1, \
-		                direction=self.rndcorr["c"] if "c" in self.rndcorr.keys() else None) ## \bar{C}
+		self._cbar = throw(self._c if self._c else self.ctry0, \
+		                   self.ctry1, \
+		                   direction=self.rndcorr["c"] if "c" in self.rndcorr.keys() else None) ## \bar{C}
 		for i in range(self._nSectors):
 			es      = self.getComp("EnergySector", i)
 			es._evv = es._ecc
@@ -506,11 +508,14 @@ class Model(Master):
 				ea = self.getComp("EnergyAgent" , l, i)
 				crit += es._ecc*ea._x
 		self._cCrit = self._ccrit*crit ## C_t^{crit}
-		if self._c < self._cCrit:
+		if self._cbar < self._cCrit:
 			self.rndcorr["c"] = "up"
 			return False
 		## all good
 		return True
 
+## to do
+## * how to compute etas?
+## * open points: p_i, theta
 
 

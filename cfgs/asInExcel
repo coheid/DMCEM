@@ -2,6 +2,8 @@
 ## search for 'chosen' to get the free parameters
 
 ## general parameters (accessed in code without preceding underscore)
+bool    :: dolf      :: False        ## set to True if you wanna run laissez-faire only
+bool    :: dothrow   :: False        ## set to True if you wanna throw initial C and v
 bool    :: dosys     :: False        ## set to True if you wanna run systematic variations
 strlist :: sysvar    :: ()           ## list of variables whose sys variation to be included, empty=all
 int     :: nAttempts :: 3            ## maximum iterations
@@ -10,8 +12,8 @@ int     :: tstep     :: 10           ## Section 3.1; years per step
 int     :: tstart    :: 2015         ## Section 3.1; starting year 
 
 ## climate model
-float   :: s1        :: 658          ## Section 3.2 (Footnote 10: 645?)
-float   :: s2        :: 149          ## Section 3.2 (Footnote 10: 162?)
+float   :: s1        :: 645.991614   ## Footnote 10 (Section 3.2: 658)
+float   :: s2        :: 161.008386   ## Footnote 10 (Section 3.2: 149)
 float   :: phil      :: 0.2          ## Section 3.2
 float   :: phi       :: 0.0228       ## Section 3.2
 float   :: phi0      :: 0.393        ## Section 3.2
@@ -19,7 +21,8 @@ float   :: sbar      :: 581          ## Section 3.2
 
 ## general
 float   :: alpha0    :: 0.3          ## Section 3.3
-float   :: beta      :: 0.8597304423 ## Section 3.5; 0.985^10
+float   :: beta      :: 0.859730442  ## Section 3.5; 0.985^10
+float   :: cbar      :: 0.639779113  ## excel sheet
 float   :: ctry0     :: 100          ## chosen; throwing C using this as mean
 float   :: ctry1     :: 20           ## chosen; throwing C using this as variance
 float   :: ccrit     :: 0.01         ## Footnote 7; chosen; supposed to be "a small number"
@@ -36,20 +39,20 @@ int     :: nRegions  :: 6            ## Section 3.1
 ## USA
 float   :: eaa0_1     :: 1            ## Section 3.5
 float   :: egga0_1    :: 0            ## Table 5
-float   :: eggbara0_1 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_1 :: 0.00516      ## Table 5
-float   :: eggn0_1    :: 0.11501      ## Table 5
-int     :: ennbar0_1  :: 310          ## Table 2
-#int     :: ennbar9_1  :: 437          ## Table 2
-#int     :: ennbar19_1 :: 470          ## Table 2
+float   :: eggbara0_1 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_1 :: 0.005162472  ## Table 5, excel sheet
+float   :: eggn0_1    :: 0.115014886  ## Table 5, excel sheet
+int     :: ennbar0_1  :: 0.310        ## Table 2, excel sheet
+#int     :: ennbar9_1  :: 0.437        ## Table 2
+#int     :: ennbar19_1 :: 0.470        ## Table 2
 float   :: eta_1_1    :: 0.5          ## chosen; energy mix 
 float   :: eta_1_2    :: 0.3          ## chosen; energy mix
 float   :: eta_1_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_1    :: 0.0000412    ## Table 3
 float   :: kinit_1    :: 0.252        ## Table 17
-float   :: q_1_1      :: 1.38         ## Table 4
-float   :: q_1_2      :: 10.19        ## Table 4
-float   :: q_1_3      :: 111.49       ## Table 4
+float   :: q_1_1      :: 1.379278017  ## Table 4, excel sheet
+float   :: q_1_2      :: 10.18947381  ## Table 4, excel sheet
+float   :: q_1_3      :: 111.4905626  ## Table 4, excel sheet
 float   :: r_1_1      :: 13.67        ## Table 14
 float   :: r_1_2      :: 253.74       ## Table 14
 float   :: r_1_3      :: 0            ## Table 14
@@ -61,20 +64,20 @@ float   :: y_1        :: 156.686      ## Table 12 (Table 2: 156.7?)
 ## OECD EU
 float   :: eaa0_2     :: 0.7          ## Section 3.5
 float   :: egga0_2    :: 0            ## Table 5
-float   :: eggbara0_2 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_2 :: 0.00582      ## Table 5
-float   :: eggn0_2    :: -0.07607     ## Table 5
-int     :: ennbar0_2  :: 557          ## Table 2
-#int     :: ennbar9_2  :: 478          ## Table 2
-#int     :: ennbar19_2 :: 500          ## Table 2
+float   :: eggbara0_2 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_2 :: 0.005819501  ## Table 5, excel sheet
+float   :: eggn0_2    :: -0.076069219 ## Table 5, excel sheet
+int     :: ennbar0_2  :: 0.5569       ## Table 2, excel sheet
+#int     :: ennbar9_2  :: 0.478        ## Table 2
+#int     :: ennbar19_2 :: 0.500        ## Table 2
 float   :: eta_2_1    :: 0.5          ## chosen; energy mix 
 float   :: eta_2_2    :: 0.3          ## chosen; energy mix
 float   :: eta_2_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_2    :: 0.0000205    ## Table 3
 float   :: kinit_2    :: 0.33         ## Table 17
-float   :: q_2_1      :: 0.56         ## Table 4
-float   :: q_2_2      :: 3.56         ## Table 4
-float   :: q_2_3      :: 360.61       ## Table 4
+float   :: q_2_1      :: 0.560266061  ## Table 4, excel sheet
+float   :: q_2_2      :: 3.564961369  ## Table 4, excel sheet
+float   :: q_2_3      :: 360.6121951  ## Table 4, excel sheet
 float   :: r_2_1      :: 4.58         ## Table 14
 float   :: r_2_2      :: 82.29        ## Table 14
 float   :: r_2_3      :: 0            ## Table 14
@@ -86,20 +89,20 @@ float   :: y_2        :: 188.510      ## Table 12 (Table 2: 188.4?)
 ## Other High Income
 float   :: eaa0_3     :: 0.9          ## Section 3.5
 float   :: egga0_3    :: 0            ## Table 5
-float   :: eggbara0_3 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_3 :: -0.00058     ## Table 5
-float   :: eggn0_3    :: -0.00299     ## Table 5
-int     :: ennbar0_3  :: 335          ## Table 2
-#int     :: ennbar9_3  :: 331          ## Table 2
-#int     :: ennbar19_3 :: 329          ## Table 2
+float   :: eggbara0_3 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_3 :: -0.000582309 ## Table 5, excel sheet
+float   :: eggn0_3    :: -0.0029874   ## Table 5, excel sheet
+int     :: ennbar0_3  :: 0.3351       ## Table 2, excel sheet
+#int     :: ennbar9_3  :: 0.331        ## Table 2
+#int     :: ennbar19_3 :: 0.329        ## Table 2
 float   :: eta_3_1    :: 0.5          ## chosen; energy mix 
 float   :: eta_3_2    :: 0.3          ## chosen; energy mix
 float   :: eta_3_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_3    :: 0.0000205    ## Table 3
 float   :: kinit_3    :: 0.202        ## Table 17
-float   :: q_3_1      :: 0.85         ## Table 4
-float   :: q_3_2      :: 4.07         ## Table 4
-float   :: q_3_3      :: 116.10       ## Table 4
+float   :: q_3_1      :: 0.845286798  ## Table 4, excel sheet
+float   :: q_3_2      :: 4.072146162  ## Table 4, excel sheet
+float   :: q_3_3      :: 116.0973513  ## Table 4, excel sheet
 float   :: r_3_1      :: 132.36       ## Table 14
 float   :: r_3_2      :: 165.93       ## Table 14
 float   :: r_3_3      :: 0            ## Table 14
@@ -110,21 +113,21 @@ float   :: y_3        :: 144.835      ## Table 12 (Table 2: 129.8?)
 
 ## China
 float   :: eaa0_4     :: 0.25         ## Section 3.5
-float   :: egga0_4    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
-float   :: eggbara0_4 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_4 :: 0.00263      ## Table 5
-float   :: eggn0_4    :: -0.05580     ## Table 5
-int     :: ennbar0_4  :: 1341         ## Table 2
-#int     :: ennbar9_4  :: 1182         ## Table 2
-#int     :: ennbar19_4 :: 1201         ## Table 2
+float   :: egga0_4    :: 0.01         ## Section 3.5 (Table 5: 0.0025)
+float   :: eggbara0_4 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_4 :: 0.002632066  ## Table 5, excel sheet
+float   :: eggn0_4    :: -0.055795988 ## Table 5, excel sheet
+int     :: ennbar0_4  :: 1.341        ## Table 2, excel sheet
+#int     :: ennbar9_4  :: 1.182        ## Table 2
+#int     :: ennbar19_4 :: 1.201        ## Table 2
 float   :: eta_4_1    :: 0.5          ## chosen; energy mix 
 float   :: eta_4_2    :: 0.3          ## chosen; energy mix
 float   :: eta_4_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_4    :: 0.0000412    ## Table 3
 float   :: kinit_4    :: 0.104        ## Table 17
-float   :: q_4_1      :: 0.11         ## Table 4
-float   :: q_4_2      :: 6.96         ## Table 4
-float   :: q_4_3      :: 12.7         ## Table 4
+float   :: q_4_1      :: 0.114543242  ## Table 4, excel sheet
+float   :: q_4_2      :: 6.958517454  ## Table 4, excel sheet
+float   :: q_4_3      :: 12.70030526  ## Table 4, excel sheet
 float   :: r_4_1      :: 7.62         ## Table 14
 float   :: r_4_2      :: 140.91       ## Table 14
 float   :: r_4_3      :: 0            ## Table 14
@@ -135,21 +138,21 @@ float   :: y_4        :: 134.534      ## Table 12 (Table 2: 69.2?)
 
 ## Developing
 float   :: eaa0_5     :: 0.35         ## Section 3.5
-float   :: egga0_5    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
-float   :: eggbara0_5 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_5 :: -0.00491     ## Table 5
-float   :: eggn0_5    :: 0.04901      ## Table 5
-int     :: ennbar0_5  :: 1110         ## Table 2
-#int     :: ennbar9_5  :: 1210         ## Table 2
-#int     :: ennbar19_5 :: 1162         ## Table 2
-float   :: eta_5_1    :: 0.5           ## chosen; energy mix 
-float   :: eta_5_2    :: 0.3           ## chosen; energy mix
-float   :: eta_5_3    :: 0.2           ## chosen; energy mix
+float   :: egga0_5    :: 0.01         ## Section 3.5 (Table 5: 0.0025)
+float   :: eggbara0_5 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_5 :: -0.004909481 ## Table 5, excel sheet
+float   :: eggn0_5    :: 0.049006282  ## Table 5, excel sheet
+int     :: ennbar0_5  :: 1.1104       ## Table 2, excel sheet
+#int     :: ennbar9_5  :: 1.210        ## Table 2
+#int     :: ennbar19_5 :: 1.162        ## Table 2
+float   :: eta_5_1    :: 0.5          ## chosen; energy mix 
+float   :: eta_5_2    :: 0.3          ## chosen; energy mix
+float   :: eta_5_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_5    :: 0.0000622    ## Table 3
 float   :: kinit_5    :: 0.101        ## Table 17
-float   :: q_5_1      :: 0.36         ## Table 4
-float   :: q_5_2      :: 1.66         ## Table 4
-float   :: q_5_3      :: 24.22        ## Table 4
+float   :: q_5_1      :: 0.361215728  ## Table 4, excel sheet
+float   :: q_5_2      :: 1.664360769  ## Table 4, excel sheet
+float   :: q_5_3      :: 24.22436064  ## Table 4, excel sheet
 float   :: r_5_1      :: 209.56       ## Table 14
 float   :: r_5_2      :: 209.74       ## Table 14
 float   :: r_5_3      :: 0            ## Table 14
@@ -160,21 +163,21 @@ float   :: y_5        :: 162.580      ## Table 12 (Table 2: 85.9?)
 
 ## Low Income
 float   :: eaa0_6     :: 0.125        ## Section 3.5
-float   :: egga0_6    :: 0.0025       ## Table 5 (Section 3.5: 0.01?)
-float   :: eggbara0_6 :: 0.10462      ## Table 5; 1.01^10-1
-float   :: eggbarn0_6 :: -0.01599     ## Table 5
-float   :: eggn0_6    :: 0.25064      ## Table 5
-int     :: ennbar0_6  :: 3289         ## Table 2
-#int     :: ennbar9_6  :: 5412         ## Table 2
-#int     :: ennbar19_6 :: 4825         ## Table 2
+float   :: egga0_6    :: 0.01         ## Section 3.5 (Table 5: 0.0025)
+float   :: eggbara0_6 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_6 :: -0.015987335 ## Table 5, excel sheet
+float   :: eggn0_6    :: 0.250639121  ## Table 5, excel sheet
+int     :: ennbar0_6  :: 3.2886       ## Table 2, excel sheet
+#int     :: ennbar9_6  :: 5.412        ## Table 2
+#int     :: ennbar19_6 :: 4.825        ## Table 2
 float   :: eta_6_1    :: 0.5          ## chosen; energy mix 
 float   :: eta_6_2    :: 0.3          ## chosen; energy mix
 float   :: eta_6_3    :: 0.2          ## chosen; energy mix
 float   :: gamma_6    :: 0.0000833    ## Table 3
 float   :: kinit_6    :: 0.011        ## Table 17
-float   :: q_6_1      :: 0.06         ## Table 4
-float   :: q_6_2      :: 0.73         ## Table 4
-float   :: q_6_3      :: 41.99        ## Table 4
+float   :: q_6_1      :: 0.064169795  ## Table 4, excel sheet
+float   :: q_6_2      :: 0.727965115  ## Table 4, excel sheet
+float   :: q_6_3      :: 41.98859112  ## Table 4, excel sheet
 float   :: r_6_1      :: 26.23        ## Table 14
 float   :: r_6_2      :: 213.92       ## Table 14
 float   :: r_6_3      :: 0            ## Table 14
@@ -186,14 +189,15 @@ float   :: y_6        :: 147.825      ## Table 12 (Table 2: 48.9?)
 
 ## Energy sectors / Resources
 int     :: nSectors :: 3             ## Section 3.1
-float   :: nu0      :: 0.0812        ## Section 3.4
+float   :: nu0      :: 0.081223357   ## Section 3.4, excel sheet
 float   :: rho      :: 0.5           ## Section 3.3
 
 ## Oil
 float   :: alpha_1  :: 0.272         ## Section 3.3
-float   :: ecc_1    :: 0.00036969    ## Section 3.3
-float   :: kappa_1  :: 0.53325       ## Section 3.4
-float   :: nu_1     :: 0.5873        ## Section 3.4
+float   :: ecc_1    :: 0.000369694   ## Section 3.3, excel sheet
+float   :: evv_1    :: 0.0004033     ## excel sheet
+float   :: kappa_1  :: 0.533249934   ## Section 3.4, excel sheet
+float   :: nu_1     :: 0.587309586   ## Section 3.4
 float   :: r_1      :: 1386          ## Section 3.3
 float   :: rcrit_1  :: 0.01          ## Section 2.3; chosen; supposed to be "close to zero"
 float   :: zeta_1   :: 0.6482        ## Section 3.3
@@ -201,15 +205,17 @@ float   :: zeta_1   :: 0.6482        ## Section 3.3
 ## Coal 
 float   :: alpha_2  :: 0.391         ## Section 3.3
 float   :: ecc_2    :: 0.000043      ## Section 3.3; should be 0.000043 no? to have $43
-float   :: kappa_2  :: 0.29483       ## Section 3.4
-float   :: nu_2     :: 0.2056        ## Section 3.4 (Section 3.3: 0.21?)
-float   :: r_2      :: 23482.48      ## Section 3.3; 1066.54+22415.94
+float   :: evv_2    :: 0.000043      ## excel sheet
+float   :: kappa_2  :: 0.294826404   ## Section 3.4, excel sheet
+float   :: nu_2     :: 0.205526512   ## Section 3.4 (Section 3.3: 0.21?), excel sheet
+float   :: r_2      :: 22209         ## excel sheet (Section 3.3: 1066.54+22415.94=23482.48)
 float   :: rcrit_2  :: 0.01          ## Section 2.3; chosen; supposed to be "close to zero"
 float   :: zeta_2   :: 0.5441        ## Section 3.3
 
 ## Renewables
 float   :: alpha_3  :: 0.82          ## Section 3.3
 float   :: ecc_3    :: 0             ## Section 3.3
+float   :: evv_3    :: 0             ## excel sheet
 float   :: kappa_3  :: 0.17192       ## Section 3.4
 float   :: nu_3     :: 0             ## Section 3.4
 float   :: r_3      :: 0             ## Section 3.3; zero means infinity

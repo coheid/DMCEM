@@ -18,14 +18,14 @@ class EnergySector(Component):
 		self._nu    = None ## \nu_i(t)    == energy elasticity [cfg]
 		self._r     = None ## R_i         == initial resource stock [cfg]
 		self._rcrit = None ## R_i^{crit}  == critical resource stock [cfg] 
-		self._evv   = None ## v_i(t)      == resource price
+		self._evv   = None ## v_i(t)      == resource price [cfg if dothrow=False]
 		self._zeta  = None ## \zeta_i     == carbon content per unit resource [cfg]
 
 	## init
 	## ---------------------------------------------
 	def init(self):
 		""" Extract all variables from cfg """
-		super(EnergySector, self).init(["alpha","ecc","kappa","nu","r","rcrit","zeta"])
+		super(EnergySector, self).init(["alpha","ecc","evv","kappa","nu","r","rcrit","zeta"])
 
 	## run
 	## ---------------------------------------------
