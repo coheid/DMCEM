@@ -1,0 +1,127 @@
+## paper: http://www.marten-hillebrand.de/research/IMCC_B.pdf
+## search for 'chosen' to get the free parameters
+
+## general parameters (accessed in code without preceding underscore)
+bool    :: dolf      :: True         ## set to True if you wanna run laissez-faire only
+bool    :: dothrow   :: False        ## set to True if you wanna throw initial C and v
+bool    :: dosys     :: False        ## set to True if you wanna run systematic variations
+strlist :: sysvar    :: ()           ## list of variables whose sys variation to be included, empty=all
+int     :: nIts      :: 2            ## maximum iterations per step
+int     :: nAttempts :: 3            ## maximum iterations of all steps
+int     :: nTsteps   :: 10           ## total time steps
+int     :: tstep     :: 10           ## Section 3.1; years per step
+int     :: tstart    :: 2015         ## Section 3.1; starting year 
+
+## climate model
+float   :: s1        :: 645.9916140350879 ## Script
+float   :: s2        :: 161.0083859649121 ## Script
+float   :: phil      :: 0.2               ## Script
+float   :: phi       :: 0.0228            ## Script
+float   :: phi0      :: 0.393             ## Script
+float   :: sbar      :: 581               ## Script
+
+## general
+float   :: alpha0    :: 0.3          ## Script
+float   :: beta      :: 0.859730442  ## Script; 0.985^10
+float   :: cbar      :: 0.639779113  ## excel sheet
+float   :: ctry0     :: 100          ## chosen; throwing C using this as mean
+float   :: ctry1     :: 20           ## chosen; throwing C using this as variance
+float   :: ccrit     :: 0.01         ## Footnote 7; chosen; supposed to be "a small number"
+float   :: deltaa    :: 0.005        ## Section 3.5
+float   :: deltan    :: 0.3          ## Section 3.5
+float   :: eqq       :: 1            ## Section 1.1
+float   :: kbar      :: 0.2375       ## Script
+float   :: sigma     :: 1            ## Script
+float   :: vtry1     :: 2            ## chosen; throwing v using this as variance (and c_i as mean)
+
+## regions
+int     :: nRegions  :: 2            ## Script
+
+## Poor
+float   :: eaa0_1     :: 1.0          ## Script
+float   :: egga0_1    :: 0            ## Table 5
+float   :: eggbara0_1 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_1 :: 0.005162472  ## Table 5, excel sheet
+float   :: eggn0_1    :: 0.115014886  ## Table 5, excel sheet
+float   :: ennbar0_1  :: 0.5          ## Script
+#int     :: ennbar9_1  :: 0.437        ## Table 2
+#int     :: ennbar19_1 :: 0.470        ## Table 2
+float   :: eta_1_1    :: 0.15         ## Script
+float   :: eta_1_2    :: 0.25         ## Script
+float   :: eta_1_3    :: 0.60         ## Script
+float   :: gamma_1    :: 0.0000412    ## Script
+float   :: kinit_1    :: 0.252        ## Table 17
+float   :: q_1_1      :: 1            ## Script
+float   :: q_1_2      :: 2            ## Script
+float   :: q_1_3      :: 3            ## Script
+float   :: r_1_1      :: 13.67        ## Table 14
+float   :: r_1_2      :: 253.74       ## Table 14
+float   :: r_1_3      :: 0            ## Table 14
+float   :: xbar_1_1   :: 13.9         ## Table 2
+float   :: xbar_1_2   :: 9.6          ## Table 2
+float   :: xbar_1_3   :: 0            ## Table 2
+float   :: y_1        :: 1.5          ## Script
+
+## Rich
+float   :: eaa0_2     :: 1.0          ## Script
+float   :: egga0_2    :: 0            ## Table 5
+float   :: eggbara0_2 :: 0.104622125  ## Table 5, excel sheet; 1.01^10-1
+float   :: eggbarn0_2 :: 0.005819501  ## Table 5, excel sheet
+float   :: eggn0_2    :: -0.076069219 ## Table 5, excel sheet
+float   :: ennbar0_2  :: 0.5          ## Script
+#int     :: ennbar9_2  :: 0.478        ## Table 2
+#int     :: ennbar19_2 :: 0.500        ## Table 2
+float   :: eta_2_1    :: 0.15         ## Script
+float   :: eta_2_2    :: 0.25         ## Script
+float   :: eta_2_3    :: 0.60         ## Script
+float   :: gamma_2    :: 0.0000412    ## Script
+float   :: kinit_2    :: 0.33         ## Table 17
+float   :: q_2_1      :: 1            ## Script
+float   :: q_2_2      :: 2            ## Script
+float   :: q_2_3      :: 3            ## Script
+float   :: r_2_1      :: 4.58         ## Table 14
+float   :: r_2_2      :: 82.29        ## Table 14
+float   :: r_2_3      :: 0            ## Table 14
+float   :: xbar_2_1   :: 10.3         ## Table 2
+float   :: xbar_2_2   :: 6.2          ## Table 2
+float   :: xbar_2_3   :: 0            ## Table 2
+float   :: y_2        :: 3.0          ## Script
+
+
+## Energy sectors / Resources
+int     :: nSectors :: 3                  ## Script
+float   :: nu0      :: 0.0812233567326101 ## Script
+float   :: rho      :: 0.5                ## Script
+
+## Oil
+float   :: alpha_1  :: 0.272              ## Script
+float   :: ecc_1    :: 0.0003698019222089416  ## Script
+float   :: evv_1    :: 0.00039529788808050325 ## Script
+float   :: kappa_1  :: 0.533249934081155  ## Script
+float   :: nu_1     :: 0.587309586        ## Section 3.4, excel sheet
+float   :: r_1      :: 1386               ## Section 3.3
+float   :: rcrit_1  :: 0.01               ## Section 2.3; chosen; supposed to be "close to zero"
+float   :: zeta_1   :: 0.6482             ## Section 3.3
+
+## Coal 
+float   :: alpha_2  :: 0.391              ## Script
+float   :: ecc_2    :: 0.000043           ## Section 3.3; should be 0.000043 no? to have $43
+float   :: evv_2    :: 0.000043           ## excel sheet
+float   :: kappa_2  :: 0.2948264037121602 ## Script
+float   :: nu_2     :: 0.205526512        ## Section 3.4 (Section 3.3: 0.21?), excel sheet
+float   :: r_2      :: 22209              ## excel sheet (Section 3.3: 1066.54+22415.94=23482.48)
+float   :: rcrit_2  :: 0.01               ## Section 2.3; chosen; supposed to be "close to zero"
+float   :: zeta_2   :: 0.5441             ## Section 3.3
+
+## Renewables
+float   :: alpha_3  :: 0.82               ## Script
+float   :: ecc_3    :: 0                  ## Section 3.3
+float   :: evv_3    :: 0                  ## excel sheet
+float   :: kappa_3  :: 0.1719236622       ## Script (=1-kappa_1-kappa2)
+float   :: nu_3     :: 0                  ## Section 3.4
+float   :: r_3      :: 0                  ## Section 3.3; zero means infinity
+float   :: rcrit_3  :: 0.01               ## Section 2.3; chosen; supposed to be "close to zero" 
+float   :: zeta_3   :: 0                  ## Section 3.3
+
+
+

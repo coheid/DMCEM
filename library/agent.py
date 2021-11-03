@@ -13,6 +13,7 @@ class EnergyAgent(Component):
 		self.m.setComp(self, l, i)
 		self.l      = l    ## region index
 		self.i      = i    ## energy sector index
+		self.obs    = []   ## list of observables
 		self._e     = None ## E_i^l(t)      == energy production
 		self._ekk   = None ## k_i^l(t)      == capital share
 		self._enn   = None ## n_i^l(t)      == labor share
@@ -26,6 +27,7 @@ class EnergyAgent(Component):
 		self._x     = None ## X_i^l(t)      == resource input
 		self._xbar  = None ## \bar{X}_i^l   == initial resource consumption [cfg]
 		self._z     = None ## Z_i^l(t)      == carbon emissions
+		setPars(self)
 
 	## init
 	## ---------------------------------------------
@@ -38,7 +40,7 @@ class EnergyAgent(Component):
 	def run(self):
 		""" Computations per step, solving optimization problem """
 		if not self.valid: return 
-		if self.t == self.m.t: return ## sync to market time!
+		#if self.t == self.m.t: return ## sync to market time! ## FIXME
 		r         = self.m.getComp("Region"      , self.l)
 		es        = self.m.getComp("EnergySector", self.i)
 		self._e   = self._q * self._k**es._alpha * self._n**(1-es._alpha-es._nu)  ## E_{i,t}^l, Eqs (4,7)

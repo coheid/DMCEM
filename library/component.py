@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from core.functions import mkdir
 
 
 ## makeCfgKey
@@ -21,15 +22,20 @@ def makeCfgKey(v, idx1, idx2):
 def endPars(model, obj):
 	""" Save time series for each observable to disk; i.e. both plot
 	and return values to csv for each observables """
-	csv = {}
+	mkdir("%s/plots"%model.tmp)
+	tsteps = model.tsteps
+	csv    = {}
 	for k,ts in obj.cache.items():
-		plt.plot(ts.keys(), ts.values())
-		plt.savefig("%s/%s%s.pdf"%(model.out, obj.name, k))
 		res = []
-		tsteps = model.tsteps
-		for t in tsteps:
+		for t in [0]+tsteps:
 			if not t in ts.keys(): res.append(0); continue
 			res.append(list(ts.values())[list(ts.keys()).index(t)])
+		###plt.plot(ts.keys(), ts.values())
+		plt.clf()
+		plt.plot(res)
+		plt.xlabel("time steps")
+		plt.ylabel(k)
+		plt.savefig("%s/plots/%s_%s.pdf"%(model.tmp, obj.name, k))
 		csv[k] = res
 	return csv
 
@@ -37,7 +43,7 @@ def endPars(model, obj):
 ## -------------------------------------------------
 def extractPars(model, obj, varsToLookFor):
 	""" Extracts a given set of parameters from the model's cfg for a given component """
-	obj.obs = []
+	found = []
 	for v in varsToLookFor:
 		for key,entry in model.cfg.cache.cache.items():
 			k = makeCfgKey(v, obj.idx1, obj.idx2)
@@ -50,8 +56,15 @@ def extractPars(model, obj, varsToLookFor):
 				model.setPar(obj.name, entry.value   , v, "central")
 			else:
 				continue
-			obj.obs.append(v)
-			break
+			found.append(v)
+			break ## go to next v in varsToLookFor
+	return found
+
+## setPars
+## ---------------------------------------------
+def setPars(obj):
+	""" Defines the set of observables for this component """
+	obj.obs = [x[1:] for x in dir(obj) if x[0:1]=="_" and x[1:2]!="_"]
 
 ## startPars
 ## -------------------------------------------------
@@ -61,12 +74,13 @@ def startPars(model, obj, par=None, var="central"):
 	for p in obj.obs:
 		setattr(obj, "_%s"%p, model.getPar(obj.name, p, var if p==par else "central"))
 		obj.cache[p] = {} ## reset cache
+	## FIXME: review this -- which starting value are we taking? are they OK for new variations??
 
 ## storePars
 ## -------------------------------------------------
 def storePars(obj):
 	""" Save a evolvable observable in buffer """
-	for obs in obj.cache.keys():
+	for obs in obj.obs:
 		obj.cache[obs][obj.t] = getattr(obj, "_%s"%obs)
 
 
@@ -119,12 +133,11 @@ class Component(object):
 	def init(self, varsToLookFor):
 		""" Extract all variables from cfg """
 		self.valid = False
-		self.obs   = []
-		extractPars(self.m, self, varsToLookFor)
-		if len(self.obs)!=len(varsToLookFor):
-			n = makeCfgKey(self.__class__.__name__, self.idx1, self.idx2)
-			varsMissing = filter(lambda x: x not in self.obs, varsToLookFor)
-			self.m.tui.error("Cannot find all variables for %s in config! %s"%(n,varsMissing))
+		found      = extractPars(self.m, self, varsToLookFor)
+		if len(found)!=len(varsToLookFor):
+			n           = makeCfgKey(self.__class__.__name__, self.idx1, self.idx2)
+			varsMissing = filter(lambda x: x not in found, varsToLookFor)
+			self.m.tui.error("Cannot find all variables for %s in config! %s"%(n, varsMissing))
 			return
 		self.valid = True
 
@@ -147,7 +160,7 @@ class Component(object):
 	def start(self, par=None, var="central"):
 		""" (Re-)Initialize parameters of this object and reset cache """
 		if not self.valid: return 
-		self.t     = 0 ## reset time value
+		self.t = -1 ## reset time value
 		startPars(self.m, self, par, var)
 
 	## store

@@ -12,5 +12,5 @@ parser.add_argument('-d'  , metavar='base', type=str, default=base,
                     help='path to the base directory')
 args = parser.parse_args()
 
-m = Model("DMCEM", args.path, args.d)
+m = Model("Model", args.path, args.d)
 m.procedure()
