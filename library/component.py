@@ -30,7 +30,6 @@ def endPars(model, obj):
 		for t in [0]+tsteps:
 			if not t in ts.keys(): res.append(0); continue
 			res.append(list(ts.values())[list(ts.keys()).index(t)])
-		###plt.plot(ts.keys(), ts.values())
 		plt.clf()
 		plt.plot(res)
 		plt.xlabel("time steps")

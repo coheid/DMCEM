@@ -142,4 +142,49 @@ print("labor alloc =>",eta1["r1"][1])
 print("res consump =>",eta2["r1"][1])
 print("enrgy ratio =>",eta3["r1"][1])
 
+print("="*15)
+print("Now considering OT!")
+print("Using energy ratio (equation A.3) from 2021 feb version:")
+
+kap = [0.533249934081155, 0.29482640371216, 0.171923662207]
+rho = 0.5 
+
+ems = {}
+ems["r1"] = {}
+ems["r1"][1] = 0.56579220073873
+ems["r1"][2] = 0.0785630740858322
+ems["r1"][3] = 0.0789632404278333
+ems["r1"][0] = sum([kap[x-1]*ems["r1"][x]**rho for x in range(1,4)])**(1./rho)
+ems["r2"] = {}
+ems["r2"][1] = 0.172304765414565
+ems["r2"][2] = 0.0181813720055553
+ems["r2"][3] = 1.53019795182667
+ems["r2"][0] = sum([kap[x-1]*ems["r2"][x]**rho for x in range(1,4)])**(1./rho)
+ems["r3"] = {}
+ems["r3"][1] = 0.319230095139317
+ems["r3"][2] = 0.0193820760198484
+ems["r3"][3] = 0.129165098165126
+ems["r3"][0] = sum([kap[x-1]*ems["r3"][x]**rho for x in range(1,4)])**(1./rho)
+ems["r4"] = {}
+ems["r4"][1] = 0.0186120414534208
+ems["r4"][2] = 0.195900757765315
+ems["r4"][3] = 0.00497160194589166
+ems["r4"][0] = sum([kap[x-1]*ems["r4"][x]**rho for x in range(1,4)])**(1./rho)
+ems["r5"] = {}
+ems["r5"][1] = 0.169539770165936
+ems["r5"][2] = 0.0101228453241597
+ems["r5"][3] = 0.0165328092530534
+ems["r5"][0] = sum([kap[x-1]*ems["r5"][x]**rho for x in range(1,4)])**(1./rho)
+ems["r6"] = {}
+ems["r6"][1] = 0.0147873845093764
+ems["r6"][2] = 0.00578981082168978
+ems["r6"][3] = 0.13890054205391
+ems["r6"][0] = sum([kap[x-1]*ems["r6"][x]**rho for x in range(1,4)])**(1./rho)
+
+eta3 = {}
+for r in ["r1","r2","r3","r4","r5","r6"]:
+	eta3[r] = {}
+	for x in range(1,4):
+		eta3[r][x] = kap[x-1] * (ems[r][x]/ems[r][0])**rho
+		print("eta",r,x,eta3[r][x])
 

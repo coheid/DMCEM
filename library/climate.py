@@ -34,9 +34,9 @@ class ClimateModel(Component):
 		""" Extract all variables from cfg """
 		super(ClimateModel, self).init(["phil", "phi0", "phi", "s1", "s2", "sbar", "t"])
 
-	## pushSs
+	## push
 	## ---------------------------------------------
-	def pushSs(self):
+	def push(self):
 		""" Push S1 and S2 to next step """
 		self._s1prev = self._s1
 		self._s2prev = self._s2

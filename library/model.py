@@ -72,6 +72,7 @@ class Model(Master):
 		self._ccrit    = None ## C^{crit}      == critical value for C [cfg]
 		self._deltaa   = None ## \delta_a      == convergence for labor productivity [cfg]
 		self._deltan   = None ## \delta_n      == convergence for population size [cfg]
+		self._egg      = None ## g             == constant growth factor [cfg]
 		self._ekk      = None ## k(t)          == sum of k_{i,t}^l over i,l
 		self._enn      = None ## n_0^l(t)      == labor cost share of final sector
 		self._eqq      = None ## q(t)          == discount factor [cfg]
@@ -218,7 +219,7 @@ class Model(Master):
 		""" Initialize parameters """
 		## set model parameters
 		self.tsteps = [t for t in range(1, self.nTsteps+1)]
-		extractPars(self, self, ["alpha0","beta","cbar","ctry0","ctry1","ccrit","deltaa","deltan","eqq","kbar","nSectors","nRegions","nu0","rho","sigma","vtry1"])
+		extractPars(self, self, ["alpha0","beta","cbar","ctry0","ctry1","ccrit","deltaa","deltan","egg","eqq","kbar","nSectors","nRegions","nu0","rho","sigma","vtry1"])
 		startPars  (self, self) ## FIXME: not good; should do it with start of others but need nRegions et al BEFORE loading components, so keep it here for now (no syst var though)
 		if self.cfg.cache.has("cbarexpl"):
 			## this is a hack, but we take cbarexpl from config without making it an observable
@@ -234,16 +235,13 @@ class Model(Master):
 			r._k  = r._kinit*self._kbar  ## K_{0,t}^l, page 42
 			r._k0 = r._k
 		## efficient tax
-		self._g      = 0.01 ## FIXME
 		cm           = self.getComp("ClimateModel")
-		self._taubar = cm._phil/(1-self._beta*(1+self._g)**(1-self._sigma))+cm._phi0*(1-cm._phil)/(1-self._beta*(1+self._g)**(1-self._sigma)*(1-cm._phi)) ## \bar{\tau}^{eff}, Eqn (28)
+		self._taubar = cm._phil/(1-self._beta*(1+self._egg)**(1-self._sigma))+cm._phi0*(1-cm._phil)/(1-self._beta*(1+self._egg)**(1-self._sigma)*(1-cm._phi)) ## \bar{\tau}^{eff}, Eqn (28)
 		self._taubar = 0 if self.dolf else self._taubar ## no tax in laissez-faire
 		## lifetime profit of resource sectors
-		yt = 0
 		for l in range(self._nRegions):
 			r     = self.getComp("Region", l)
 			r._pi = 0
-			yt   += r._gamma*r._y
 			for i in range(self._nSectors):
 				es     = self.getComp("EnergySector", i)
 				ea     = self.getComp("EnergyAgent" , l, i)
@@ -253,8 +251,8 @@ class Model(Master):
 		self._eqq      = 1.0
 		self._eqqprev  = 1.0
 		self._cbarprev = self._cbar
+		self._cbar     = self._cbarexpl[0] if self._cbarexpl else self._cbar
 		self._tau      = 0.0
-		#self._tau  = self._taubar*yt ## \tau_t^{eff}, Eqn (28)
 
 	## load
 	## ---------------------------------------------
@@ -339,28 +337,30 @@ class Model(Master):
 	## ---------------------------------------------
 	def runPush(self, isFirst=False):
 		""" Pushes all relevant observables from one timestep to the next """
-		## new parameters for labor supply
-		for l in range(self._nRegions):
-			r = self.getComp("Region", l)
-			r.pushEnn()
 		## new capital
 		yt = 0
 		ct = 0
+		tt = 0
 		for l in range(self._nRegions):
 			r   = self.getComp("Region", l)
+			tt += r._t
 			yt += r._y
 			for i in range(self._nSectors):
 				es = self.getComp("EnergySector",    i)
 				ea = self.getComp("EnergyAgent" , l, i)
 				ct += es._ecc*ea._x
 		self._kbar = self._y - self._cbar - ct  ## \bar{K}_{t+1}, Eqn (25)
-		## push "prev" variables
+		#print("kbar",self._kbar,self._y,self._cbar,self._tau,tt,self.getComp("ClimateModel")._t)
+		## push "prev" variables and labor supply
 		self._eqqprev  = self._eqq
 		self._cbarprev = self._cbar
+		for l in range(self._nRegions):
+			r = self.getComp("Region", l)
+			r.push()
 		for i in range(self._nSectors):
 			es = self.getComp("EnergySector", i)
-			es.pushEvv()	
-		self.getComp("ClimateModel").pushSs()
+			es.push()
+		self.getComp("ClimateModel").push()
 
 	## runStepOne
 	## ---------------------------------------------
@@ -406,29 +406,31 @@ class Model(Master):
 		self.runErr(idx, isInit)
 		## regional consumption
 		tot = 0
+		wpk = 0
+		zx  = 0
 		for l in range(self._nRegions):
 			r      = self.getComp("Region", l)
 			r._eww = self._enn*r._y/r._n0   ## w_t^l, Eqn (3)
-			r._w  += self._eqq*r._eww*r._n  ## W_t^l, page 7
-			zx     = 0
+			r._w   = r._wprev + self._eqq*r._eww*r._n  ## W_t^l, page 7, Eqn (A.11)
 			for i in range(self._nSectors):
 				es  = self.getComp("EnergySector", i)
 				ea  = self.getComp("EnergyAgent" , l, i)
 				zx += es._zeta*ea._x
-			tf     = self._eqq*self._tau*zx  ## T^l(t) without \theta^l, Eqn (12)
-## FIXME: what about \theta^l?
-			r._t  += 0 if self.dolf else tf  ## no transfer in laissez-faire
-			tot   += self._err0*r._k0 + r._w + r._pi + r._theta*r._t 
 		for l in range(self._nRegions):
-			r     = self.getComp("Region", l)
-			r._mu = (self._err0*r._k0 + r._w + r._pi + r._theta*r._t) / tot  ## \mu^l, Eqn (19)
-			r._c  = r._mu*self._cbar  ## C_t^l, Eqn (19)
+			r      = self.getComp("Region", l)
+			r._t   = r._tprev + r._theta*self._eqq*self._tau*zx  ## T^l(t), Eqn (12, A.12)
+			tot   += self._err0*r._k0 + r._w + r._pi + r._t
+			wpk   += r._w + r._pi + self._err0*r._k0
+		for l in range(self._nRegions):
+			r        = self.getComp("Region", l)
+			r._theta = (r._mu*(wpk + tot) - r._w - r._pi - self._err0*r._k0) / tot  ## \theta^l, Eqn (19)
+			r._mu    = (self._err0*r._k0 + r._w + r._pi + r._t) / tot  ## \mu^l, Eqn (19)
+			r._c     = r._mu*self._cbar  ## C_t^l, Eqn (19)
 		## step Ic: resource allocation
-		yt = 0  ## old sum of gamma^l*Y_t^l (recomputed below)
+		yt = 0
 		for l in range(self._nRegions):
 			r   = self.getComp("Region", l)
 			yt += r._gamma*r._y
-		r0      = self.getComp("Region", 0) ## first region, l=1
 		self._z = 0  ## sum over Z_{i,t}^l, total emissions
 		for l in range(self._nRegions):
 			r = self.getComp("Region", l)
@@ -436,8 +438,7 @@ class Model(Master):
 				es       = self.getComp("EnergySector", i)
 				if es._ecc==0: continue 
 				ea       = self.getComp("EnergyAgent" , l, i)
-				ea._x    = self._nu0*es._nu*r._y * ea._eta / (es._evv + es._zeta*self._tau*yt)  ## X_{i,t}^l, page 36
-				ea._x = round(ea._x, 13)
+				ea._x    = self._nu0*es._nu*r._y * ea._eta / (es._evv + es._zeta*self._tau)  ## X_{i,t}^l, page 36
 				ea._z    = es._zeta*ea._x   ## Z_{i,t}^l, Eqn (5)
 				self._z += ea._z            ## Z_t
 
@@ -464,7 +465,9 @@ class Model(Master):
 				es = self.getComp("EnergySector", i)
 				ea = self.getComp("EnergyAgent" , l, i)
 				ea._eta = es._kappa * (ea._e/r._e)**self._rho  ## \eta_{i,t}^l, Eqn (32)
-		self._tau = self._taubar*yt  ## \tau_t^{eff}, Eqn (28)
+		## carbon tax
+		if not isInit:
+			self._tau = self._taubar*yt  ## \tau_t^{eff}, Eqn (28)
 		## energy prices
 		for l in range(self._nRegions):
 			r = self.getComp("Region", l)

@@ -41,8 +41,10 @@ class Region(Component):
 		self._n0       = None ## N_0^l(t)       == labor supply of final sector
 		self._pi       = None ## \Pi^l          == lifetime profit 
 		self._t        = None ## T^l(t)         == transfer to be received by consumers
+		self._tprev    = None ## T^l(t)         == transfer to be received by consumers of previous step
 		self._theta    = None ## theta^l        == transfer policy
 		self._w        = None ## W^l(t)         == lifetime labor income
+		self._wprev    = None ## W^l(t)         == lifetime labor income of previous step
 		self._y        = None ## Y^l(t)         == total regional production [cfg]
 		setPars(self)
 
@@ -71,18 +73,21 @@ class Region(Component):
 		self._d   = 1.0 - math.exp(-self._gamma*(cm._s-cm._sbar))  ## D_t^l, Eqn (15)
 		## output
 		self._y   = (1-self._d) * self._k**self.m._alpha0 * self._n0**(1-self.m._alpha0-self.m._nu0) * self._e**self.m._nu0  ## Y_t^l, Eqn (1)
-		self._y = round(self._y, 14)
 		self.t    = self.m.t
 
-	## pushEnn
+	## push
 	## ---------------------------------------------
-	def pushEnn(self):
-		""" Pushes parameters of labor supply to next iteration """
+	def push(self):
+		""" Pushes parameters of labor supply and other variables to next iteration """
 		if not self.valid: return 
-		self._eggn = self._eggbarn0+self._eggn0*math.exp(-self.m._deltan*(self.m.t+1)) ## g_{n,t}^l, Eqn (41)
-		self._egga = self._eggbara0+self._egga0*math.exp(-self.m._deltaa*(self.m.t+1)) ## g_{a,t}^l, Eqn (41)
-		self._enn  = (1+self._eggn)*self._enn  ## n_t^l, Eqn (40)
-		self._eaa  = (1+self._egga)*self._eaa  ## a_t^l, Eqn (40)
+		## labor supply
+		self._eggn  = self._eggbarn0+self._eggn0*math.exp(-self.m._deltan*(self.m.t+1)) ## g_{n,t}^l, Eqn (41)
+		self._egga  = self._eggbara0+self._egga0*math.exp(-self.m._deltaa*(self.m.t+1)) ## g_{a,t}^l, Eqn (41)
+		self._enn   = (1+self._eggn)*self._enn  ## n_t^l, Eqn (40)
+		self._eaa   = (1+self._egga)*self._eaa  ## a_t^l, Eqn (40)
+		## transfer
+		self._wprev = self._w
+		self._tprev = self._t
 
 	## start
 	## ---------------------------------------------
@@ -92,8 +97,11 @@ class Region(Component):
 		super(Region, self).start(par, var)
 		self._enn   = self._ennbar0  ## starting value for n_t^l
 		self._eaa   = self._eaa0     ## starting value for a_t^l
+		self._mu    = 0.0            ## starting value for \mu^l
 		self._w     = 0.0            ## starting value for W_t^l
+		self._wprev = 0.0            ## starting value for W_t^l
 		self._t     = 0.0            ## starting value for T_t^l
-		self._theta = 1.0            # FIXME
+		self._tprev = 0.0            ## starting value for T_t^l
+		self._theta = 0.0            ## starting value for \theta^l
 
 

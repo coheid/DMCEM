@@ -30,12 +30,10 @@ class EnergySector(Component):
 		""" Extract all variables from cfg """
 		super(EnergySector, self).init(["alpha","ecc","evv","kappa","nu","r","rcrit","zeta"])
 
-	## start
+	## push
 	## ---------------------------------------------
-	def start(self, par=None, var="central"):
-		""" (Re-)Initialize parameters of this object and reset cache """
-		if not self.valid: return 
-		super(EnergySector, self).start(par, var)
+	def push(self):
+		""" Computes the resource prices of the timestep """
 		self._evvprev = self._evv
 
 	## runEvv
@@ -45,11 +43,12 @@ class EnergySector(Component):
 		if not self.valid: return 
 		self._evv = self._ecc + self.m._err*(self._evvprev - self._ecc)  ## v_{i,t}, Eqn (10) 
 
-	## pushEvv
+	## start
 	## ---------------------------------------------
-	def pushEvv(self):
-		""" Computes the resource prices of the timestep """
+	def start(self, par=None, var="central"):
+		""" (Re-)Initialize parameters of this object and reset cache """
+		if not self.valid: return 
+		super(EnergySector, self).start(par, var)
 		self._evvprev = self._evv
-
 
 

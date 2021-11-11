@@ -1,0 +1,51 @@
+## paper: http://www.marten-hillebrand.de/research/IMCC_B.pdf
+## search for 'chosen' to get the free parameters
+
+loadConfig :: cfgs/asInExcel_LF
+
+## general parameters (accessed in code without preceding underscore)
+bool    :: dolf      :: False                  ## set to True if you wanna run laissez-faire only
+int     :: nIts      :: 30                     ## maximum iterations per step
+int     :: nAttempts :: 1                      ## maximum iterations over all steps per variation
+int     :: nTsteps   :: 74                     ## total time steps
+#float   :: cbar      :: 0.641024492832198      ## excel sheet
+list    :: cbarexpl  :: loadCsv('cfgs/_asInExcel_cbar_OT', 'cbar') ## values from excel sheet explicitly
+
+## USA
+float   :: eta_1_1    :: 0.7538815605618179    ## chosen; via compute.py from Excel; via labor params
+float   :: eta_1_2    :: 0.15531716022195316   ## chosen; via compute.py from Excel; via labor params
+float   :: eta_1_3    :: 0.09080127921622891   ## chosen; via compute.py from Excel; via labor params
+float   :: y_1        :: 0.156954443390106     ## excel sheet OT
+
+## OECD EU
+float   :: eta_2_1    :: 0.4672043840694597    ## chosen; via compute.py from Excel labor params
+float   :: eta_2_2    :: 0.08390873155651064   ## chosen; via compute.py from Excel labor params
+float   :: eta_2_3    :: 0.44888688437402974   ## chosen; via compute.py from Excel labor params
+float   :: y_2        :: 0.188656227438046     ## excel sheet OT
+
+## Other High Income
+float   :: eta_3_1    :: 0.7455373030816238    ## chosen; via compute.py from Excel labor params
+float   :: eta_3_2    :: 0.10156712878289278   ## chosen; via compute.py from Excel labor params
+float   :: eta_3_3    :: 0.15289556813548358   ## chosen; via compute.py from Excel labor params
+float   :: y_3        :: 0.14503200882324      ## excel sheet OT
+
+## China
+float   :: eta_4_1    :: 0.3377968454364644    ## chosen; via compute.py from Excel labor params
+float   :: eta_4_2    :: 0.6059157009801576    ## chosen; via compute.py from Excel labor params
+float   :: eta_4_3    :: 0.05628745358337812   ## chosen; via compute.py from Excel labor params
+float   :: y_4        :: 0.134575722690256     ## excel sheet OT
+
+## Developing
+float   :: eta_5_1    :: 0.809206519827927     ## chosen; via compute.py from Excel labor params
+float   :: eta_5_2    :: 0.10932272367450047   ## chosen; via compute.py from Excel labor params
+float   :: eta_5_3    :: 0.08147075649757254   ## chosen; via compute.py from Excel labor params
+float   :: y_5        :: 0.162881003311442     ## excel sheet OT
+
+## Low Income
+float   :: eta_6_1    :: 0.4284342863775939    ## chosen; via compute.py from Excel labor params
+float   :: eta_6_2    :: 0.14821982199758862   ## chosen; via compute.py from Excel labor params
+float   :: eta_6_3    :: 0.42334589162481745   ## chosen; via compute.py from Excel labor params
+float   :: y_6        :: 0.14789766056842      ## excel sheet OT
+
+## Oil
+float   :: evv_1    :: 0.000389372             ## excel sheet

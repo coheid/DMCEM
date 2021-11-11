@@ -2,7 +2,7 @@
 ## search for 'chosen' to get the free parameters
 
 ## general parameters (accessed in code without preceding underscore)
-bool    :: dolf      :: True                   ## set to True if you wanna run laissez-faire only
+bool    :: dolf      :: False                  ## set to True if you wanna run laissez-faire only
 bool    :: dothrow   :: False                  ## set to True if you wanna throw initial C and v
 bool    :: dosys     :: False                  ## set to True if you wanna run systematic variations
 strlist :: sysvar    :: ()                     ## list of variables whose sys variation to be included, empty=all
@@ -25,12 +25,13 @@ float   :: t         :: 1.61798291366814       ## excel sheet
 float   :: alpha0    :: 0.3                    ## Section 3.3
 float   :: beta      :: 0.859730442259143      ## Section 3.5; 0.985^10
 float   :: cbar      :: 0.639779113237569      ## excel sheet
-list    :: cbarexpl  :: loadCsv('cfgs/_asInExcel_cbar', 'cbar') ## values from excel sheet explicitly
+list    :: cbarexpl  :: loadCsv('cfgs/_asInExcel_cbar_LF', 'cbar') ## values from excel sheet explicitly
 float   :: ctry0     :: 100                    ## chosen; throwing C using this as mean
 float   :: ctry1     :: 20                     ## chosen; throwing C using this as variance
 float   :: ccrit     :: 0.01                   ## Footnote 7; chosen; supposed to be "a small number" -> FIXME: should be 1% of GDP!
 float   :: deltaa    :: 0.005                  ## Section 3.5
 float   :: deltan    :: 0.3                    ## Section 3.5
+float   :: egg       :: 0.01                   ## growth factor
 float   :: eqq       :: 1                      ## Section 1.1
 float   :: kbar      :: 0.2375                 ## Section 3.5
 float   :: sigma     :: 1                      ## Section 3.5
@@ -66,7 +67,7 @@ float   :: r_1_3      :: 0                     ## Table 14
 float   :: xbar_1_1   :: 13.9                  ## Table 2
 float   :: xbar_1_2   :: 9.6                   ## Table 2
 float   :: xbar_1_3   :: 0                     ## Table 2
-float   :: y_1        :: 0.1567                ## Table 12 (Table 2: 156.7?), excel sheet
+float   :: y_1        :: 0.1567                ## Table 12, excel sheet LF
 
 ## OECD EU
 float   :: eaa0_2     :: 0.7                   ## Section 3.5
@@ -95,7 +96,7 @@ float   :: r_2_3      :: 0                     ## Table 14
 float   :: xbar_2_1   :: 10.3                  ## Table 2
 float   :: xbar_2_2   :: 6.2                   ## Table 2
 float   :: xbar_2_3   :: 0                     ## Table 2
-float   :: y_2        :: 0.1885                ## Table 12 (Table 2: 188.4?), excel sheet
+float   :: y_2        :: 0.1885                ## Table 12, excel sheet LF
 
 ## Other High Income
 float   :: eaa0_3     :: 0.9                   ## Section 3.5
@@ -124,7 +125,7 @@ float   :: r_3_3      :: 0                     ## Table 14
 float   :: xbar_3_1   :: 12.7                  ## Table 2
 float   :: xbar_3_2   :: 5.8                   ## Table 2
 float   :: xbar_3_3   :: 0                     ## Table 2
-float   :: y_3        :: 0.1448                ## Table 12 (Table 2: 129.8?), excel sheet
+float   :: y_3        :: 0.1448                ## Table 12, excel sheet LF
 
 ## China
 float   :: eaa0_4     :: 0.25                  ## Section 3.5
@@ -153,7 +154,7 @@ float   :: r_4_3      :: 0                     ## Table 14
 float   :: xbar_4_1   :: 5.3                   ## Table 2
 float   :: xbar_4_2   :: 31.9                  ## Table 2
 float   :: xbar_4_3   :: 0                     ## Table 2
-float   :: y_4        :: 0.1345                ## Table 12 (Table 2: 69.2?), excel sheet
+float   :: y_4        :: 0.1345                ## Table 12, excel sheet LF
 
 ## Developing
 float   :: eaa0_5     :: 0.35                  ## Section 3.5
@@ -182,7 +183,7 @@ float   :: r_5_3      :: 0                     ## Table 14
 float   :: xbar_5_1   :: 15.5                  ## Table 2
 float   :: xbar_5_2   :: 7.0                   ## Table 2
 float   :: xbar_5_3   :: 0                     ## Table 2
-float   :: y_5        :: 0.1626                ## Table 12 (Table 2: 85.9?), excel sheet
+float   :: y_5        :: 0.1626                ## Table 12, excel sheet LF
 
 ## Low Income
 float   :: eaa0_6     :: 0.125                 ## Section 3.5
@@ -211,7 +212,7 @@ float   :: r_6_3      :: 0                     ## Table 14
 float   :: xbar_6_1   :: 7.4                   ## Table 2
 float   :: xbar_6_2   :: 8.6                   ## Table 2
 float   :: xbar_6_3   :: 0                     ## Table 2
-float   :: y_6        :: 0.1478                ## Table 12 (Table 2: 48.9?), excel sheet
+float   :: y_6        :: 0.1478                ## Table 12, excel sheet LF
 
 
 ## Energy sectors / Resources
