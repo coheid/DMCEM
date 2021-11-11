@@ -5,7 +5,7 @@
 `DMCEM` is a software package implementing the simulation of a
 Dynamic Multi-Country Equilibrium Model (DMCEM) presented originally
 in <a href="https://doi.org/10.1016/j.jet.2018.11.001">https://doi.org/10.1016/j.jet.2018.11.001</a>.
-More recent publications involve the April 2020 version of
+More recent publications involve the April 2020, February 2021, and November 2021 versions of
 <a href="http://www.marten-hillebrand.de/research/IMCC_B.pdf">"Who pays the bills?"</a>.
 
 
@@ -13,15 +13,15 @@ More recent publications involve the April 2020 version of
 
 ### Principal Architecture
 
-`DMCEM` is written in python3 and uses the (private) `WHElight` package.
+`DMCEM` is written in python and uses the (private) `WHElight` package.
 
 The program is run through a model class (`Model`, inherits from `Master`) that relies on 
-dedicated components.Components are implemented as children to their common `Component` class.
+dedicated components, which are implemented as children to their common `Component` class.
 A component is an entity that appears standalone within the model and has parameters 
-(that have an initial value and evolve in the course of the simulation) as well as a label. 
+(which have an initial value and evolve in the course of the simulation) as well as a label. 
 The components are either the climate model (`ClimateModel`), the different economic 
 regions (`Region`), energy sectors (`EnergySector`), or energy agents (`EnergyAgent`). 
-An energy agent is the implementation of an energy sector in a given region. 
+An energy agent is the implementation of an energy sector within a given region. 
 Thus, components may be equipped with indices corresponding to the indices 
 <img src="https://render.githubusercontent.com/render/math?math=i \in \textbf{I}"> and
 <img src="https://render.githubusercontent.com/render/math?math=\ell \in \textbf{L}">.
@@ -41,7 +41,7 @@ An observable is an economic variable that evolves with time as the simulation p
 e.g. <img src="https://render.githubusercontent.com/render/math?math=Y_t">. An observable 
 can belong to a component in case it is logically connected
 to it or there are multiple incarnations of the same observable, one for every component
-(e.g. one can compute the production per region, 
+(e.g. one can compute the production output per region, 
 <img src="https://render.githubusercontent.com/render/math?math=Y_t^\ell">). 
 In case an observable belongs to a component it is indexed. We use the index `i` for the 
 energy sectors and `l` for the economic regions. Energy agents (i.e. energy sectors within 
@@ -83,7 +83,7 @@ file. The configuration is a text file that obeys the format required by the cor
 * observable names are given without the preceding underscore, while any indices of the 
   component that the observable belongs to (if any) are given via underscores; note that 
   indexing of the economic observables as well as the naming scheme in the cfg 
-  file always starts at 1, while indexing within the python program always starts at 0;
+  file always start at 1, while indexing within the python program always starts at 0;
   for example:
   - `q_2_1` defines the initial value of the observable 
     <img src="https://render.githubusercontent.com/render/math?math=Q_{1,t}^2">
@@ -108,12 +108,12 @@ file. The configuration is a text file that obeys the format required by the cor
 The core method is `procedure` in the `Model` class. It first extracts the
 obsevables that belong to the model, builds the components, and then extracts their
 parameters too. Eventually, the simulation loop is started, consisting of the 
-successive call of the methods `start` (setting initial values of exogenous observables), 
+successive calls to the methods `start` (setting initial values of exogenous observables), 
 `run` (evolving all observables), and `end` (exporting the values of each observable at
 each point in time to a `csv` file). If systematic variations are specified, they are
 run therafter once the nominal loop has finished.
 
-Every component has four functions:
+Every component has at least the following four methods:
 * `init` is responsible for retrieving the observable's initial values from the cfg file
   (it extracts all initial values for all systematic variations)
 * `start` picks up the proper initial value for each observable to be used in the 
