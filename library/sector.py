@@ -36,9 +36,9 @@ class EnergySector(Component):
 		""" Computes the resource prices of the timestep """
 		self._evvprev = self._evv
 
-	## runEvv
+	## run
 	## ---------------------------------------------
-	def runEvv(self):
+	def run(self):
 		""" Computes the resource prices of the timestep """
 		if not self.valid: return 
 		self._evv = self._ecc + self.m._err*(self._evvprev - self._ecc)  ## v_{i,t}, Eqn (10) 

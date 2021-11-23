@@ -2,43 +2,50 @@
 ## search for 'chosen' to get the free parameters
 
 ## general parameters (accessed in code without preceding underscore)
-bool    :: dolf      :: False                  ## set to True if you wanna run laissez-faire only
-bool    :: dothrow   :: False                  ## set to True if you wanna throw initial C and v
-bool    :: dosys     :: False                  ## set to True if you wanna run systematic variations
-strlist :: sysvar    :: ()                     ## list of variables whose sys variation to be included, empty=all
-int     :: nIts      :: 100                    ## maximum iterations per step
-int     :: nAttempts :: 1                      ## maximum iterations over all steps per variation
-int     :: nTsteps   :: 74                     ## total time steps
-int     :: tstep     :: 1                      ## Section 3.1; years per step
-int     :: tstart    :: 2015                   ## Section 3.1; starting year 
+bool    :: dolf       :: True                   ## set to True if you wanna run laissez-faire only
+bool    :: dosys      :: False                  ## set to True if you wanna run systematic variations
+strlist :: sysvar     :: ()                     ## list of variables whose sys variation to be included, empty=all
+int     :: nIts       :: 100                    ## maximum iterations per step
+int     :: nTsteps    :: 20                     ## total time steps
+int     :: tstep      :: 1                      ## Section 3.1; years per step
+int     :: tstart     :: 2010                   ## Section 3.1; starting year 
+
+## consumption and shooting-related parameters
+bool    :: doshooting :: True                   ## set to True if you wanna throw initial C and v
+float   :: cbarcrit   :: 0.01                   ## chosen; fraction of Y as lower limit (here 1%)
+#list    :: cbarexpl   :: loadCsv('cfgs/_asInExcel_cbar_LF', 'cbar') ## values from excel sheet explicitly
+## shooting: central
+bool    :: computec   :: False                  ## set to True if you wanna compute C always, also at t=0
+float   :: cbar       :: 0.639779113237569      ## excel sheet
+float   :: cbardelta  :: 0.000000000006         ## chosen; stepsize in % of varying cbar up/down
+int     :: nTits      :: 25                     ## time steps for shooting per time step
+## shooting: emissions x 1.09
+#bool    :: computec   :: True                   ## set to True if you wanna compute C always, also at t=0
+#float   :: cbar       :: 0.5663796588340791     ## excel sheet
+#float   :: cbardelta  :: 0.000006               ## chosen; stepsize in % of varying cbar up/down
+#int     :: nTits      :: 13                     ## time steps for shooting per time step
 
 ## climate model
-float   :: phil      :: 0.2                    ## Section 3.2
-float   :: phi       :: 0.0228                 ## Section 3.2
-float   :: phi0      :: 0.393                  ## Section 3.2
-float   :: s1        :: 645.991614035088       ## Footnote 10 (Section 3.2: 658)
-float   :: s2        :: 161.008385964912       ## Footnote 10 (Section 3.2: 149)
-float   :: sbar      :: 581                    ## Section 3.2
-float   :: t         :: 1.61798291366814       ## excel sheet
+float   :: phil       :: 0.2                    ## Section 3.2
+float   :: phi        :: 0.0228                 ## Section 3.2
+float   :: phi0       :: 0.393                  ## Section 3.2
+float   :: s1         :: 645.991614035088       ## Footnote 10 (Section 3.2: 658)
+float   :: s2         :: 161.008385964912       ## Footnote 10 (Section 3.2: 149)
+float   :: sbar       :: 581                    ## Section 3.2
+float   :: t          :: 1.61798291366814       ## excel sheet
 
 ## general
-float   :: alpha0    :: 0.3                    ## Section 3.3
-float   :: beta      :: 0.859730442259143      ## Section 3.5; 0.985^10
-float   :: cbar      :: 0.639779113237569      ## excel sheet
-list    :: cbarexpl  :: loadCsv('cfgs/_asInExcel_cbar_LF', 'cbar') ## values from excel sheet explicitly
-float   :: ctry0     :: 100                    ## chosen; throwing C using this as mean
-float   :: ctry1     :: 20                     ## chosen; throwing C using this as variance
-float   :: ccrit     :: 0.01                   ## Footnote 7; chosen; supposed to be "a small number" -> FIXME: should be 1% of GDP!
-float   :: deltaa    :: 0.005                  ## Section 3.5
-float   :: deltan    :: 0.3                    ## Section 3.5
-float   :: egg       :: 0.01                   ## growth factor
-float   :: eqq       :: 1                      ## Section 1.1
-float   :: kbar      :: 0.2375                 ## Section 3.5
-float   :: sigma     :: 1                      ## Section 3.5
-float   :: vtry1     :: 2                      ## chosen; throwing v using this as variance (and c_i as mean)
+float   :: alpha0     :: 0.3                    ## Section 3.3
+float   :: beta       :: 0.859730442259143      ## Section 3.5; 0.985^10
+float   :: deltaa     :: 0.005                  ## Section 3.5
+float   :: deltan     :: 0.3                    ## Section 3.5
+float   :: egg        :: 0.01                   ## growth factor
+float   :: eqq        :: 1                      ## Section 1.1
+float   :: kbar       :: 0.2375                 ## Section 3.5
+float   :: sigma      :: 1                      ## Section 3.5
 
 ## regions
-int     :: nRegions  :: 6                      ## Section 3.1
+int     :: nRegions   :: 6                      ## Section 3.1
 
 ## USA
 float   :: eaa0_1     :: 1                     ## Section 3.5

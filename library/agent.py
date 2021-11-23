@@ -40,12 +40,10 @@ class EnergyAgent(Component):
 	def run(self):
 		""" Computations per step, solving optimization problem """
 		if not self.valid: return 
-		#if self.t == self.m.t: return ## sync to market time! ## FIXME
 		r         = self.m.getComp("Region"      , self.l)
 		es        = self.m.getComp("EnergySector", self.i)
 		self._e   = self._q * self._k**es._alpha * self._n**(1-es._alpha-es._nu)  ## E_{i,t}^l, Eqs (4,7)
 		self._e  *= self._x**es._nu if self._x>0 else 1 ## E_{i,t}^l, Eqs (4,7)
-		self.t    = self.m.t
 
 	## start
 	## ---------------------------------------------

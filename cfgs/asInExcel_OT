@@ -4,12 +4,23 @@
 loadConfig :: cfgs/asInExcel_LF
 
 ## general parameters (accessed in code without preceding underscore)
-bool    :: dolf      :: False                  ## set to True if you wanna run laissez-faire only
-int     :: nIts      :: 30                     ## maximum iterations per step
-int     :: nAttempts :: 1                      ## maximum iterations over all steps per variation
-int     :: nTsteps   :: 74                     ## total time steps
-#float   :: cbar      :: 0.641024492832198      ## excel sheet
-list    :: cbarexpl  :: loadCsv('cfgs/_asInExcel_cbar_OT', 'cbar') ## values from excel sheet explicitly
+bool    :: dolf       :: False                 ## set to True if you wanna run laissez-faire only
+int     :: nIts       :: 30                    ## maximum iterations per step
+int     :: nTsteps    :: 20                    ## total time steps
+
+## shooting-related parameters
+bool    :: doshooting :: True                  ## set to True if you wanna throw initial C and v
+#list    :: cbarexpl   :: loadCsv('cfgs/_asInExcel_cbar_OT', 'cbar') ## values from excel sheet explicitly
+## shooting: central
+#bool    :: computec   :: False                 ## set to True if you wanna compute C always, also at t=0
+#float   :: cbar       :: 0.641024492832198     ## excel sheet
+#float   :: cbardelta  :: 0.0000000006          ## chosen; stepsize in % of varying cbar up/down
+#int     :: nTits      :: 15                    ## time steps for shooting per time step
+## shooting emissions x 1.09
+#bool    :: computec   :: True                  ## set to True if you wanna compute C always, also at t=0
+#float   :: cbar       :: 0.5670195388421959    ## excel sheet
+#float   :: cbardelta  :: 0.000006              ## chosen; stepsize in % of varying cbar up/down
+#int     :: nTits      :: 13                    ## time steps for shooting per time step
 
 ## USA
 float   :: eta_1_1    :: 0.7538815605618179    ## chosen; via compute.py from Excel; via labor params

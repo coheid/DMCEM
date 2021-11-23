@@ -166,6 +166,7 @@ class Component(object):
 	## ---------------------------------------------
 	def store(self):
 		""" Save a evolvable observable in buffer """
+		self.t = self.m.t
 		storePars(self)		
 
 

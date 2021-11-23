@@ -46,12 +46,11 @@ class ClimateModel(Component):
 	def run(self):
 		""" Computations per step, solving optimization problems """
 		if not self.valid: return 
-		#if self.t == self.m.t: return ## sync to market time! ## FIXME
 		self._s1 =               self._s1prev + self._phil               *self.m._z ## S_{1,t}, Eqn (14a)
 		self._s2 = (1-self._phi)*self._s2prev + (1-self._phil)*self._phi0*self.m._z ## S_{2,t}, Eqn (14b)
 		self._s  = self._s1 + self._s2                                              ## S_t    , page 7
+		#self._s  = self._s * 1.09 ## FIXME: for emissions test
 		self._t  = 3*math.log(self._s/self._sbar)/math.log(2)                       ## TEMP_t , Eqn (31)
-		self.t   = self.m.t
 
 	## start
 	## ---------------------------------------------

@@ -59,7 +59,6 @@ class Region(Component):
 	def run(self):
 		""" Computations per step, solving optimization problems """
 		if not self.valid: return 
-		#if self.t == self.m.t: return ## sync to market time! ## FIXME
 		## produced energy
 		self._e = 0
 		for i in range(self.m._nSectors):
@@ -73,7 +72,6 @@ class Region(Component):
 		self._d   = 1.0 - math.exp(-self._gamma*(cm._s-cm._sbar))  ## D_t^l, Eqn (15)
 		## output
 		self._y   = (1-self._d) * self._k**self.m._alpha0 * self._n0**(1-self.m._alpha0-self.m._nu0) * self._e**self.m._nu0  ## Y_t^l, Eqn (1)
-		self.t    = self.m.t
 
 	## push
 	## ---------------------------------------------

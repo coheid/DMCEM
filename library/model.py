@@ -14,26 +14,6 @@ from .region        import *
 from .sector        import *
 
 
-## throw
-## -------------------------------------------------
-def throw(mean, variance, minimum=None, maximum=None, direction=None, incl=True):
-	""" Helper function to throw initial value for a 
-	variable based on certain constraints """
-	while True:
-		x = np.random.normal(mean, variance)
-		if minimum is not None:
-			if     incl and x<=minimum: continue
-			if not incl and x< minimum: continue
-		if maximum is not None:
-			if     incl and x>=maximum: continue
-			if not incl and x> maximum: continue 
-		if direction=="up" and x<=mean: continue
-		if direction=="dn" and x>=mean: continue
-		return x
-	return 0
-
-
-
 ## Model
 ## =================================================
 class Model(Master):
@@ -52,45 +32,43 @@ class Model(Master):
 		self.tmp       = "%s/tmp/"%self.out
 		mkdir(self.out)
 		mkdir(self.tmp)
-		self.tui       = Tui(self)
-		self.ui        = self.tui
-		self.idx1      = None ## mimick component
-		self.idx2      = None
-		self.it        = 0  ## counter for successful iterations
-		self.t         = 0  ## time value
-		self.objs      = {} ## pointers to the components
-		self.pars      = {} ## parameter values and systematic variations
-		self.obs       = [] ## list of observables
-		self.cache     = {} ## cache for observable values per timestep
-		self._alpha0   = None ## \alpha_0      == capital elasticity [cfg]
-		self._beta     = None ## \beta         == utility parameter [cfg]
-		self._cbar     = None ## \bar{C}(t)    == global consumption [cfg if dothrow==False]
-		self._cbarexpl = None ## \bar{C}(t)    == global consumption taken from Excel sheet explicitly [cfg]
-		self._cbarprev = None ## \bar{C}(t)    == global consumption of previous step
-		self._ctry0    = None ##               == mean     for throwing C [cfg]
-		self._ctry1    = None ##               == variance for throwing C [cfg]
-		self._ccrit    = None ## C^{crit}      == critical value for C [cfg]
-		self._deltaa   = None ## \delta_a      == convergence for labor productivity [cfg]
-		self._deltan   = None ## \delta_n      == convergence for population size [cfg]
-		self._egg      = None ## g             == constant growth factor [cfg]
-		self._ekk      = None ## k(t)          == sum of k_{i,t}^l over i,l
-		self._enn      = None ## n_0^l(t)      == labor cost share of final sector
-		self._eqq      = None ## q(t)          == discount factor [cfg]
-		self._eqqprev  = None ## q(t)          == discount factor of previous step
-		self._err      = None ## r(t)          == capital price
-		self._err0     = None ## r(0)          == capital price
-		self._kbar     = None ## \bar{K}(t)    == sum of K_0^l(t) over l [cfg]
-		self._nbar     = None ## \bar{N}(t)    == sum of N^l(t) over l 
-		self._nRegions = None ## L             == number of regions [cfg]
-		self._nSectors = None ## I             == number of sectors [cfg]
-		self._nu0      = None ## \nu_0         == energy elasticity [cfg]
-		self._sigma    = None ## \sigma        == utility parameter [cfg]
-		self._rho      = None ## \rho          == substitution elasticity [cfg]
-		self._tau      = None ## \tau^{eff}(t) == carbon tax revenue
-		self._taubar   = None ## \bar{\tau}(t) == carbon tax 
-		self._vtry1    = None ##               == variance for throwing v [cfg]
-		self._y        = None ## Y(t)          == sum of Y^l(t) over l 
-		self._z        = None ## Z(t)          == sum of Z_i^l(t) over l,i, total emissions 
+		self.tui        = Tui(self)
+		self.ui         = self.tui
+		self.idx1       = None ## mimick component
+		self.idx2       = None
+		self.it         = 0  ## counter for successful iterations
+		self.t          = 0  ## time value
+		self.objs       = {} ## pointers to the components
+		self.pars       = {} ## parameter values and systematic variations
+		self.obs        = [] ## list of observables
+		self.cache      = {} ## cache for observable values per timestep
+		self._alpha0    = None ## \alpha_0      == capital elasticity [cfg]
+		self._beta      = None ## \beta         == utility parameter [cfg]
+		self._cbar      = None ## \bar{C}(t)    == global consumption [cfg]
+		self._cbarexpl  = None ## \bar{C}(t)    == global consumption taken from Excel sheet explicitly [cfg]
+		self._cbarprev  = None ## \bar{C}(t)    == global consumption of previous step
+		self._cbarcrit  = None ## \bar{c}^{crit} == critical value for C [cfg]
+		self._cbardelta = None ## \Delta\bar{C}  == stepsize for varying C [cfg]
+		self._deltaa    = None ## \delta_a      == convergence for labor productivity [cfg]
+		self._deltan    = None ## \delta_n      == convergence for population size [cfg]
+		self._egg       = None ## g             == constant growth factor [cfg]
+		self._ekk       = None ## k(t)          == sum of k_{i,t}^l over i,l
+		self._enn       = None ## n_0^l(t)      == labor cost share of final sector
+		self._eqq       = None ## q(t)          == discount factor [cfg]
+		self._eqqprev   = None ## q(t)          == discount factor of previous step
+		self._err       = None ## r(t)          == capital price
+		self._err0      = None ## r(0)          == capital price
+		self._kbar      = None ## \bar{K}(t)    == sum of K_0^l(t) over l [cfg]
+		self._nbar      = None ## \bar{N}(t)    == sum of N^l(t) over l 
+		self._nRegions  = None ## L             == number of regions [cfg]
+		self._nSectors  = None ## I             == number of sectors [cfg]
+		self._nu0       = None ## \nu_0         == energy elasticity [cfg]
+		self._sigma     = None ## \sigma        == utility parameter [cfg]
+		self._rho       = None ## \rho          == substitution elasticity [cfg]
+		self._tau       = None ## \tau^{eff}(t) == carbon tax revenue
+		self._taubar    = None ## \bar{\tau}(t) == carbon tax 
+		self._y         = None ## Y(t)          == sum of Y^l(t) over l 
+		self._z         = None ## Z(t)          == sum of Z_i^l(t) over l,i, total emissions 
 		setPars(self)
 
 	## __getattr__
@@ -176,10 +154,12 @@ class Model(Master):
 	## ---------------------------------------------
 	def end(self, par=None, var="central"):
 		""" End sequence, save everything to disk """
+		self.tui.msg("Saving output to disk")
 		self.dump("final")
 		x    = "LF" if self.dolf else "OT"
 		name = "%s_sysvar_%s_%s"%(x, par, var) if par and var else "%s_central"%x
 		out  = "%s%s/"%(self.out, name)
+		rm(out)
 		mv(self.tmp, out)
 		## FIXME: copy logfile too? (but only after execution..)
 
@@ -219,7 +199,7 @@ class Model(Master):
 		""" Initialize parameters """
 		## set model parameters
 		self.tsteps = [t for t in range(1, self.nTsteps+1)]
-		extractPars(self, self, ["alpha0","beta","cbar","ctry0","ctry1","ccrit","deltaa","deltan","egg","eqq","kbar","nSectors","nRegions","nu0","rho","sigma","vtry1"])
+		extractPars(self, self, ["alpha0","beta","cbar","cbarcrit","cbardelta","deltaa","deltan","egg","eqq","kbar","nSectors","nRegions","nu0","rho","sigma"])
 		startPars  (self, self) ## FIXME: not good; should do it with start of others but need nRegions et al BEFORE loading components, so keep it here for now (no syst var though)
 		if self.cfg.cache.has("cbarexpl"):
 			## this is a hack, but we take cbarexpl from config without making it an observable
@@ -266,51 +246,46 @@ class Model(Master):
 			for i in range(self._nSectors):
 				EnergyAgent(self, l, i)
 
+	## retrieve
+	## ---------------------------------------------
+	def retrieve(self, tstep):
+		""" Retrieves and applies the values of all 
+		observables for a given time step """
+		comps = [self] + list(self.objs.values())
+		for obj in comps:
+			for obs in obj.obs:
+				setattr(obj, "_%s"%obs, obj.cache[obs][tstep])
+		self.t = tstep
+
 	## run
 	## ---------------------------------------------
 	def run(self):
 		""" Core sequence, simulation loop """
-		## the simulation loop
-		it           = 0
-		self.rndcorr = {}
-		while self.tui.statlvl!=ERROR and it<self.nAttempts:
-			it += 1
-			self.tui.msg("Doing iteration %02d"%it)
-			## throwing initial values
-			if self.dothrow: self.throw() ## throw variables
-			## compute pre-iteration step
-			self.t = 0
-			self.tui.msg("Computing t=%02d"%self.t)
-			self.initVals()
-			for jt in range(self.nIts):
-				self.runStepOne(jt, True)
-				self.runStepTwo(jt, True)
+		## compute pre-iteration step
+		self.t = 0
+		self.tui.msg("Computing t=%02d"%self.t)
+		self.initVals()
+		## initial step
+		if self.doshooting: 
 			self.store()
-			## push to first step (t=1)
-			self.runPush(True)
-			## main temporal iteration
-			v = False
-			for self.t in self.tsteps:
-				#if any([not c.valid for c in self.objs.values()]): break ## stop if a component failed ## FIXME
-				self.tui.msg("Computing t=%02d"%self.t)
-				for jt in range(self.nIts):
-					self.runStepOne(jt)
-					self.runStepTwo(jt)
-				self.store()
-				v = self.verifyStep()
-				if not v: break
-				self.runPush()
-			## if verification failed, restart with better throwing; else leave
-			if not v: 
-				self.tui.msg("Per-step verification failed! Dumping and going to restart..")
-				self.dump("iteration%02d"%it)
-				continue
-			## end-of-loop verification	
-			if not self.verify(): 
-				self.tui.msg("End-of-loop verification failed! Dumping and going to restart..")
-				self.dump("iteration%02d"%it)
-			else:
-				break
+			self.runShooting()
+		self.runLoop(True)
+		## push to first step (t=1)
+		self.store()
+		self.runPush(True)
+		## main temporal iteration
+		for self.t in self.tsteps:
+			#if any([not c.valid for c in self.objs.values()]): break ## stop if a component failed ## FIXME
+			self.tui.msg("Computing t=%02d"%self.t)
+			## process timestep
+			if self.doshooting: 
+				self.store() ## we need to keep track of pushed variables
+				self.runShooting()
+			self.runLoop()
+			## push to next step (t->t+1)
+			self.store()
+			self.runPush()
+			#print("kbar",self._kbar,self._y,self._cbar,self._tau,self.getComp("ClimateModel")._t)
 
 	## runErr
 	## ---------------------------------------------
@@ -321,17 +296,25 @@ class Model(Master):
 		r0        = self.getComp("Region", 0)
 		self._err = self._alpha0*r0._y/r0._k ## r_t, Eqn (3)
 		## new consumption
-		if not isInit:
+		if not isInit or self.computecbar:
 			if self._cbarexpl: self._cbar = self._cbarexpl[self.t] ## take \bar{C}_t values from Excel sheet, explicitly (avoid shooting per iteration)
 			else             : self._cbar = math.pow(self._beta*self._err, 1.0/self._sigma)*self._cbarprev ## \bar{C}_t, Eqn (20)
 		## new resource prices and consumption
 		if not isInit:
 			for i in range(self._nSectors):
 				es = self.getComp("EnergySector", i)
-				es.runEvv()	
+				es.run()
 		## initial capital price
 		if isInit: self._err0 = self._err
 		else     : self._eqq  = self._eqqprev*(1.0/self._err)
+
+	## runLoop
+	## ---------------------------------------------
+	def runLoop(self, isInit=False):
+		""" Runs simulation loop within time step to converge to fixed point """
+		for it in range(self.nIts):
+			self.runStepOne(it, isInit)
+			self.runStepTwo(it, isInit)
 
 	## runPush
 	## ---------------------------------------------
@@ -361,6 +344,41 @@ class Model(Master):
 			es = self.getComp("EnergySector", i)
 			es.push()
 		self.getComp("ClimateModel").push()
+
+	## runShooting
+	## ---------------------------------------------
+	def runShooting(self):
+		""" Runs shooting procedure within timestep """
+		tstep = self.t
+		while True:
+			cbar   = self._cbarprev  ## to remember, because retrieve() will overwrite self._cbarprev
+			res, n = self.runShootingLoop(tstep)
+			self.retrieve(tstep)   ## get back to conditions as beginning of time step
+			self._cbarprev = cbar  ## recall since retrieve() has overwritten it
+			if res>0: ## increase Cbar
+				self._cbarprev = cbar*(1.+self._cbardelta)
+				self.tui.msg("Shooting: cbarprev too low (%.16f, %d its), increase to %.16f and try again"%(cbar, n, self._cbarprev))
+				continue
+			if res<0: ## decrease Cbar
+				self._cbarprev = cbar*(1.-self._cbardelta)
+				self.tui.msg("Shooting: cbarprev too high (%.16f, %d its), decrease to %.16f and try again"%(cbar, n, self._cbarprev))
+				continue
+			return ## res=0, so we're fine
+
+	## runShootingLoop
+	## ---------------------------------------------
+	def runShootingLoop(self, tstep):
+		""" Runs the shooting loop (time evolves within the time step),
+		return 0 if loop managed to get to tmin """
+		for tx in range(self.nTits):
+			self.t = tstep+tx
+			#self.tui.msg("Shooting t=%02d, %s"%(self.t,self._cbarprev))
+			self.runLoop(self.t==0) ## run time step t
+			self.runPush(self.t==0) ## push to next step (t->t+1) to get K
+			## verifyStep
+			v = self.verifyStep()
+			if v!=0: return v, tx+1
+		return 0, tx+1
 
 	## runStepOne
 	## ---------------------------------------------
@@ -518,51 +536,13 @@ class Model(Master):
 			for i in range(self._nSectors):
 				self.getComp("EnergyAgent", l, i).store()
 
-	## throw
-	## ---------------------------------------------
-	def throw(self):
-		""" Throw initial values for variables """
-		self._cbar = throw(self._c if self._c else self.ctry0, \
-		                   self.ctry1, \
-		                   direction=self.rndcorr["c"] if "c" in self.rndcorr.keys() else None) ## \bar{C}
-		for i in range(self._nSectors):
-			es      = self.getComp("EnergySector", i)
-			es._evv = es._ecc
-			if es._r==0: continue
-			idx     = "v%d"%i
-			es._evv = throw(es._ecc, self.vtry1, minimum=es._ecc, incl=False, \
-			                direction=self.rndcorr[idx] if idx in self.rndcorr.keys() else None) ## v_i
-
-	## verify
-	## ---------------------------------------------
-	def verify(self):
-		""" End-of-loop verification """
-		self.rndcorr = {}
-		## resources
-		for i in range(self._nSectors):
-			es  = self.getComp("EnergySector", i)
-			tot = es._r
-			for l in range(self._nRegions):
-				ea   = self.getComp("EnergyAgent" , l, i)
-				tot -= ea._x
-			if tot<0: 
-				self.rndcorr["v%d"%i] = "dn"
-				return False
-			if tot>es._rcrit:
-				self.rndcorr["v%d"%i] = "up"
-				return False
-		## all good
-		return True
-
 	## verifyStep
 	## ---------------------------------------------
 	def verifyStep(self):
-		""" Verification after every iteration step """
-		self.rndcorr = {}
+		""" Verification after every iteration step; returns
+		direction of how cbar must be varied (-1 down, +1 up, 0 OK) """
 		## capital
-		if self._kbar < 0:
-			self.rndcorr["c"] = "dn"
-			return False
+		if self._kbar<0: return -1
 		## consumption
 		crit = 0		
 		for l in range(self._nRegions):
@@ -571,11 +551,9 @@ class Model(Master):
 			for i in range(self._nSectors):
 				es = self.getComp("EnergySector", i)
 				ea = self.getComp("EnergyAgent" , l, i)
-				crit += es._ecc*ea._x
-		self._cCrit = self._ccrit*crit ## C_t^{crit}
-		if self._cbar < self._cCrit:
-			self.rndcorr["c"] = "up"
-			return False
+				crit -= es._ecc*ea._x
+		if self._cbar < self._cbarcrit*crit:  ## C_t^{crit}, footnote page 34
+			return 1
 		## all good
-		return True
+		return 0
 
