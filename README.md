@@ -158,3 +158,39 @@ files are dumped. The output produced comprises
   not verified as OK are dumped; the output of the good iteration is called `final.csv`
 * a series of plots depicting the time series of every observable [UNTESTED!]
 
+
+## Shooting
+
+The algorithm runs using a method called shooting, where the consumption at every
+timestep is recalibrated to ensure a stable processing of the next $n$ timesteps.
+In order to use shooting, one needs to enable it via the config file parameter 
+`doshooting` that needs to be set to `True`. Then, a number of additional parameters
+need to be provided:
+* `cbarcrit` which gives the critical consumption level in percent of GDP; if the 
+  world consumption sinks below this value, the iteration is truncated
+* `cbardelta` the percentage used to vary the total world consumption up or down
+* `nTits` the number of time steps the code needs to run successfully in order to
+  accept the shooted consumption value (and progress to the next timestep)
+
+Obviously, one needs to pass an initial value via the variable `cbar`. Do _not_ 
+give the consumption using the option `cbarexpl` (which takes specific values from
+an input CSV file which is useful for synchronization exercises). By default,
+the initial value is taken as is, i.e. no shooting takes place for $t=0$. This
+is because of these values can be expected to be already sensible, so they already
+should guarantee a stable iteration for the next timesteps. However, in case one
+adds modifications to the algorithm, shooting should also be done for the initial
+timestep, which can be enabled using the boolean option `computec`. 
+
+When making modifications to the algorithm, it may be difficult to find the proper
+consumption value that will lead to a stable progression through the timesteps. The
+following procedure has proven useful: take an initial value from the setup without
+your changes and reduce `cbardelta` to tenths of permille level. In this way, only
+few shooting iterations are necessary to find a consumption level at which the 
+printed messages oscillate between "cbarprev too low, must be increased" and
+"cbarprev too high, must be decreased". Then, take one of these values as new 
+starting point and reduce the delta. One may tune the delta and the `nTits` parameter
+in order to get the most accurate value of $C$ and the largest number of time 
+periods for which the execution is stable. If the oscillating condition from above
+is not met, one may review the changes to the algorithm again.
+
+
